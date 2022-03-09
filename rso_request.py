@@ -45,7 +45,7 @@ def delete_local_rso(discord_id):
   rso_data = sheet.get_all_values()
   for i, rso in enumerate(rso_data):
     if discord_id == str(rso[0]):
-      sheet.delete_row(i)
+      sheet.delete_row(i+1)
       return True
 
   return False
