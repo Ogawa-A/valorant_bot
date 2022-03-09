@@ -30,8 +30,8 @@ def get_local_RSO(discord_id):
 # RSO情報を保存する
 def set_local_rso(discord_id, rso, username, password):
   sheet = get_spreadsheet()
-  row_num = sheet.row_count
-  sheet.update_cell(row_num + 1, 0, discord_id)
+  row_num = len(sheet.col_values(1))
+  sheet.update_cell(row_num + 1, 1, discord_id)
   sheet.update_cell(row_num + 1, 2, rso.access_token)
   sheet.update_cell(row_num + 1, 3, rso.entitlements_token)
   sheet.update_cell(row_num + 1, 4, rso.user_id)
