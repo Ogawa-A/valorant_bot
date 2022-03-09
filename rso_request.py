@@ -22,7 +22,8 @@ def get_local_RSO(discord_id):
   ros_data = sheet.get_all_values()
   
   for rso in ros_data:
-    if discord_id == str(rso[0]):
+    print(rso[0])
+    if str(discord_id) in str(rso[0]):
       return RSO(rso[1], rso[2], rso[3])
 
   return None
@@ -31,7 +32,7 @@ def get_local_RSO(discord_id):
 def set_local_rso(discord_id, rso, username, password):
   sheet = get_spreadsheet()
   row_num = len(sheet.col_values(1))
-  sheet.update_cell(row_num + 1, 1, discord_id)
+  sheet.update_cell(row_num + 1, 1, str(discord_id))
   sheet.update_cell(row_num + 1, 2, rso.access_token)
   sheet.update_cell(row_num + 1, 3, rso.entitlements_token)
   sheet.update_cell(row_num + 1, 4, rso.user_id)

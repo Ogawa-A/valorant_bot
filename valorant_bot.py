@@ -88,7 +88,7 @@ async def on_message(message):
         text = 'ログインに失敗したのでもう一回頼む'
         await reply(message.channel, text)
       else:
-        text = '認証に成功したのでbotがつかえるようになったよ'
+        text = '認証に成功したのでbotがつかえるようになったよ。このチャンネルは自動で消しときます'
         await reply(message.channel, text)
         await delete_channel(message.channel)
         rso_request.set_local_rso(message.author.id, rso, username, password)
