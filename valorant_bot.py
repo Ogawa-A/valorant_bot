@@ -1,4 +1,5 @@
 import re
+import os
 import discord
 import string
 import random
@@ -6,10 +7,6 @@ import asyncio
 import rso_request
 import shop
 
-TOKEN = 'NjQzODQyNjMxNzI5ODA3Mzgx.XctNeA.XpQsYqxnNPQXg52y2mtsQfHAjJ4'
-GUILD_ID = 643844242665373696
-CATEGORY_CHANNEL_ID = 949821716010512464
-riot_development_api_key = 'RGAPI-745aa212-6761-4607-ae17-1fb99f5106df'
 client = discord.Client()
 rso_channels = []
 
@@ -104,8 +101,8 @@ def randomname(num):
 
 # 認証用のプライベートチャンネルの作成
 async def create_private_channel(message):
-  guild = client.get_guild(GUILD_ID)
-  category_channel = guild.get_channel(CATEGORY_CHANNEL_ID)
+  guild = client.get_guild(int(os.environ['GUILD_ID']))
+  category_channel = guild.get_channel(int(os.environ['CATEGORY_CHANNEL_ID']))
   overwrites = {
     guild.default_role: discord.PermissionOverwrite(read_messages=False),
     guild.me: discord.PermissionOverwrite(read_messages=True)
@@ -137,5 +134,5 @@ async def reply_embed(channel, title, image_url):
   await channel.send(embed = embed)
 
 
-client.run(TOKEN)
+client.run(os.environ['DISCORD_TOKEN'])
 

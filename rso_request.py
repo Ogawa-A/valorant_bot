@@ -52,12 +52,11 @@ def delete_local_rso(discord_id):
 
 
 def get_spreadsheet():
-  json_dict = json.loads(os.environ['gcp-umaumabot-json'])
+  json_dict = json.loads(os.environ['gcp-json'])
   scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
   credentials = ServiceAccountCredentials.from_json_keyfile_dict(json_dict, scope)
   gc = gspread.authorize(credentials)
-  WORKBOOK_KEY = '1ZBHyudhcxcpcthl3_gj4FZjhIDn5nNF4BwwP5Tk71gg'
-  workbook = gc.open_by_key(WORKBOOK_KEY)
+  workbook = gc.open_by_key(os.environ['WORKBOOK_KEY'])
   sheet = workbook.get_worksheet(0)
   
   return sheet
