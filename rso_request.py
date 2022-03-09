@@ -22,7 +22,6 @@ def get_local_RSO(discord_id):
   ros_data = sheet.get_all_values()
   
   for rso in ros_data:
-    print(rso[0])
     if str(discord_id) in str(rso[0]):
       return RSO(rso[1], rso[2], rso[3])
 
