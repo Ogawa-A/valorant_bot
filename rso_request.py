@@ -26,7 +26,7 @@ def get_userdata(discord_id):
     if str(discord_id) in str(data[0]):
       # 複合化
       key = os.environ['AES_KEY'].encode()
-      cipher = AES.new(key, AES.MODE_EAX, data[4])
+      cipher = AES.new(key, AES.MODE_EAX, data[4].encode())
       cipher_text = cipher.decrypt_and_verify(data[2].encode(), data[3].encode())
       username, password = cipher_text.split()
 
@@ -49,7 +49,7 @@ def set_userdata(discord_id, username, password):
   sheet.update_cell(row_num + 1, 1, str(discord_id))
   sheet.update_cell(row_num + 1, 2, cipher_text.decode())
   sheet.update_cell(row_num + 1, 3, tag.decode())
-  sheet.update_cell(row_num + 1, 4, cipher.nonce)
+  sheet.update_cell(row_num + 1, 4, cipher.nonce.decode())
 
 
 # 保存したRSO情報を削除する
