@@ -25,9 +25,9 @@ def get_userdata(discord_id):
   for data in user_data:
     if str(discord_id) in str(data[0]):
       # 複合化
-      key = os.environ['AES_KEY'].encode('utf-8')
+      key = os.environ['AES_KEY'].encode()
       cipher = AES.new(key, AES.MODE_EAX, data[4])
-      cipher_text = cipher.decrypt_and_verify(data[2], data[3])
+      cipher_text = cipher.decrypt_and_verify(data[2].encode(), data[3].encode())
       username, password = cipher_text.split()
 
       return get_rso_data(username, password)
@@ -40,14 +40,15 @@ def set_userdata(discord_id, username, password):
   row_num = len(sheet.col_values(1))
 
   # 暗号化
-  key = os.environ['AES_KEY'].encode('utf-8')
+  key = os.environ['AES_KEY'].encode()
   cipher = AES.new(key, AES.MODE_EAX)
-  encrypt_text = '{0} {1}'.format(username, password).encode('utf-8')
+  encrypt_text = '{0} {1}'.format(username, password).encode()
   cipher_text, tag = cipher.encrypt_and_digest(encrypt_text)
 
+  print(cipher_text, tag, cipher.nonce)
   sheet.update_cell(row_num + 1, 1, str(discord_id))
-  sheet.update_cell(row_num + 1, 2, cipher_text)
-  sheet.update_cell(row_num + 1, 3, tag)
+  sheet.update_cell(row_num + 1, 2, cipher_text.decode())
+  sheet.update_cell(row_num + 1, 3, tag.decode())
   sheet.update_cell(row_num + 1, 4, cipher.nonce)
 
 
