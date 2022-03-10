@@ -22,10 +22,14 @@ def get_userdata(discord_id):
   sheet = get_spreadsheet()
   user_data = sheet.get_all_values()
   
+
   for data in user_data:
+    print(data, discord_id)
     if str(discord_id) in str(data[0]):
       # 複合化
       key = os.environ['AES_KEY'].encode()
+      print(data[1], data[2], data[3])
+      print(bytes.fromhex(data[1]), bytes.fromhex(data[2]), bytes.fromhex(data[3]))
       cipher = AES.new(key, AES.MODE_EAX, bytes.fromhex(data[3]))
       cipher_text = cipher.decrypt_and_verify(bytes.fromhex(data[1]), bytes.fromhex(data[2]))
       username, password = cipher_text.split()
