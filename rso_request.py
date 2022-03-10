@@ -26,8 +26,8 @@ def get_userdata(discord_id):
     if str(discord_id) in str(data[0]):
       # 複合化
       key = os.environ['AES_KEY'].encode('latin-1')
-      cipher = AES.new(key, AES.MODE_EAX, data[4].encode('latin-1'))
-      cipher_text = cipher.decrypt_and_verify(data[2].encode('latin-1'), data[3].encode('latin-1'))
+      cipher = AES.new(key, AES.MODE_EAX, data[3].encode('latin-1'))
+      cipher_text = cipher.decrypt_and_verify(data[1].encode('latin-1'), data[2].encode('latin-1'))
       username, password = cipher_text.split()
 
       return get_rso_data(username, password)
