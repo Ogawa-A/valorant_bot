@@ -24,7 +24,6 @@ def get_userdata(discord_id):
   
 
   for data in user_data:
-    print(data, discord_id)
     if str(discord_id) in str(data[0]):
       # 複合化
       key = os.environ['AES_KEY'].encode()
