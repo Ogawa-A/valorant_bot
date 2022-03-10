@@ -30,8 +30,8 @@ def get_userdata(discord_id):
       key = os.environ['AES_KEY'].encode()
       cipher = AES.new(key, AES.MODE_EAX, bytes.fromhex(data[3]))
       cipher_text = cipher.decrypt_and_verify(bytes.fromhex(data[1]), bytes.fromhex(data[2]))
-      print(cipher_text)
-      username, password = cipher_text.split()
+      print(cipher_text.decode())
+      username, password = cipher_text.decode().split()
 
       print(username, password)
       return get_rso_data(username, password)
@@ -49,8 +49,6 @@ def set_userdata(discord_id, username, password):
   encrypt_text = '{0} {1}'.format(username, password).encode()
   cipher_text, tag = cipher.encrypt_and_digest(encrypt_text)
 
-  print(cipher_text, tag, cipher.nonce)
-  print(cipher_text.hex(), tag.hex(), cipher.nonce.hex())
   sheet.update_cell(row_num + 1, 1, str(discord_id))
   sheet.update_cell(row_num + 1, 2, cipher_text.hex())
   sheet.update_cell(row_num + 1, 3, tag.hex())
