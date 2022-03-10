@@ -5,6 +5,7 @@ import json
 import gspread
 import requests
 import dataclasses
+from Crypto.Cipher import AES
 from urllib3 import PoolManager
 from collections import OrderedDict
 from requests.adapters import HTTPAdapter
@@ -16,40 +17,51 @@ class RSO:
   entitlements_token : str
   user_id : str
 
-# 保存済みのRSO情報の取得
-def get_local_RSO(discord_id):
+# 保存済みの情報のからRSO取得
+def get_userdata(discord_id):
   sheet = get_spreadsheet()
-  ros_data = sheet.get_all_values()
+  user_data = sheet.get_all_values()
   
-  for rso in ros_data:
-    if str(discord_id) in str(rso[0]):
-      return RSO(rso[1], rso[2], rso[3])
+  for data in user_data:
+    if str(discord_id) in str(data[0]):
+      # 複合化
+      key = os.environ['AES_KEY'].encode('utf-8')
+      cipher = AES.new(key, AES.MODE_EAX, data[5])
+      username = cipher.decrypt_and_verify(data[1], data[2])
+      password = cipher.decrypt_and_verify(data[3], data[4])
+      return get_rso_data(username, password)
 
   return None
 
-# RSO情報を保存する
-def set_local_rso(discord_id, rso, username, password):
+# ユーザー情報を保存する
+def set_userdata(discord_id, username, password):
   sheet = get_spreadsheet()
   row_num = len(sheet.col_values(1))
+
+  # 暗号化
+  key = os.environ['AES_KEY'].encode('utf-8')
+  cipher = AES.new(key, AES.MODE_EAX)
+  cipher_username, tag_username = cipher.encrypt_and_digest(username)
+  cipher_pass, tag_pass = cipher.encrypt_and_digest(password)
+
   sheet.update_cell(row_num + 1, 1, str(discord_id))
-  sheet.update_cell(row_num + 1, 2, rso.access_token)
-  sheet.update_cell(row_num + 1, 3, rso.entitlements_token)
-  sheet.update_cell(row_num + 1, 4, rso.user_id)
-  #sheet.update_cell(row_num + 1, 5, username)
-  #sheet.update_cell(row_num + 1, 6, password)
+  sheet.update_cell(row_num + 1, 2, cipher_username)
+  sheet.update_cell(row_num + 1, 3, tag_username)
+  sheet.update_cell(row_num + 1, 4, cipher_pass)
+  sheet.update_cell(row_num + 1, 5, tag_pass)
+  sheet.update_cell(row_num + 1, 6, cipher.nonce)
 
 
 # 保存したRSO情報を削除する
-def delete_local_rso(discord_id):
+def delete_userdata(discord_id):
   sheet = get_spreadsheet()
-  rso_data = sheet.get_all_values()
-  for i, rso in enumerate(rso_data):
-    if discord_id == str(rso[0]):
+  user_data = sheet.get_all_values()
+  for i, data in enumerate(user_data):
+    if discord_id == str(data[0]):
       sheet.delete_row(i+1)
       return True
 
   return False
-
 
 def get_spreadsheet():
   json_dict = json.loads(os.environ['gcp-json'])

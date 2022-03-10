@@ -12,6 +12,7 @@ rso_channels = []
 
 STORE_KEY = ['store', 'ストア', 'ショップ']
 
+
 @client.event
 async def on_ready():
     print('connect')
@@ -42,12 +43,12 @@ async def on_message(message):
 
         # RSO情報の削除
         elif '削除' in message.content:
-         success = rso_request.delete_local_rso(str(message.author.id))
+         success = rso_request.delete_userdata(str(message.author.id))
          text = '削除に成功しました' if success else '削除に失敗しました'
          await reply(message.channel, text)
 
         elif re.sub('<@!\d+>\S*?', message.content, '') in str(STORE_KEY):
-          rso = rso_request.get_local_RSO(str(message.author.id))
+          rso = rso_request.get_userdata(str(message.author.id))
           if rso == None:
             text = 'まずはメンションをつけて「登録」と発言してくれよな'
             await reply(message.channel, text)
@@ -91,7 +92,7 @@ async def on_message(message):
         text = '認証に成功したのでbotがつかえるようになったよ。このチャンネルは自動で消しときます'
         await reply(message.channel, text)
         await delete_channel(message.channel)
-        rso_request.set_local_rso(message.author.id, rso, username, password)
+        rso_request.set_userdata_local(message.author.id, username, password)
         return
 
 # ランダム文字列の生成
