@@ -53,6 +53,7 @@ async def on_message(message):
             text = 'まずはメンションをつけて「登録」と発言してくれよな'
             await reply(message.channel, text)
             return
+
           skin_data = shop.get_skin_data(rso)
           if len(skin_data) == 0:
             text = 'ストア情報の取得に失敗しちゃった…'
@@ -69,12 +70,10 @@ async def on_message(message):
             await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
 
         else:
-          text = 'まずはメンションをつけて「登録」と発言してくれよな'
+          text = 'ショップ情報が知りたかったら store ストア ショップ のどれかをメンション付きで発言してくれよな'
           await reply(message.channel, text)
           return
           
-          
-
     # RSO登録用チャンネル内で発言があった場合
     elif message.channel in rso_channels:
       try:
@@ -92,7 +91,7 @@ async def on_message(message):
         text = '認証に成功したのでbotがつかえるようになったよ。このチャンネルは自動で消しときます'
         await reply(message.channel, text)
         await delete_channel(message.channel)
-        rso_request.set_userdata_local(message.author.id, username, password)
+        rso_request.set_userdata(message.author.id, username, password)
         return
 
 # ランダム文字列の生成
@@ -131,7 +130,8 @@ async def reply(channel, text, mention = None):
 # embedを使って送信
 async def reply_embed(channel, title, image_url):
   embed = discord.Embed(title = title, color = 0x4169e1)
-  embed.set_image(url = image_url)
+  embed.set_thumbnailet(url = image_url)
+  # embed.set_image(url = image_url)
   await channel.send(embed = embed)
 
 
