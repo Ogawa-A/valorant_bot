@@ -41,8 +41,8 @@ def set_userdata(discord_id, username, password):
   # 暗号化
   key = os.environ['AES_KEY'].encode('utf-8')
   cipher = AES.new(key, AES.MODE_EAX)
-  cipher_username, tag_username = cipher.encrypt_and_digest(username)
-  cipher_pass, tag_pass = cipher.encrypt_and_digest(password)
+  cipher_username, tag_username = cipher.encrypt_and_digest(username.encode('utf-8'))
+  cipher_pass, tag_pass = cipher.encrypt_and_digest(password.encode('utf-8'))
 
   sheet.update_cell(row_num + 1, 1, str(discord_id))
   sheet.update_cell(row_num + 1, 2, cipher_username)
