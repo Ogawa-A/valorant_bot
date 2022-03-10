@@ -26,9 +26,10 @@ def get_userdata(discord_id):
     if str(discord_id) in str(data[0]):
       # 複合化
       key = os.environ['AES_KEY'].encode('utf-8')
-      cipher = AES.new(key, AES.MODE_EAX, data[5])
-      username = cipher.decrypt_and_verify(data[1], data[2])
-      password = cipher.decrypt_and_verify(data[3], data[4])
+      cipher = AES.new(key, AES.MODE_EAX, data[4])
+      cipher_text = cipher.decrypt_and_verify(data[2], data[3])
+      username, password = cipher_text.split()
+
       return get_rso_data(username, password)
 
   return None
@@ -41,15 +42,13 @@ def set_userdata(discord_id, username, password):
   # 暗号化
   key = os.environ['AES_KEY'].encode('utf-8')
   cipher = AES.new(key, AES.MODE_EAX)
-  cipher_username, tag_username = cipher.encrypt_and_digest(username.encode('utf-8'))
-  cipher_pass, tag_pass = cipher.encrypt_and_digest(password.encode('utf-8'))
+  encrypt_text = '{0} {1}'.format(username, password).encode('utf-8')
+  cipher_text, tag = cipher.encrypt_and_digest(encrypt_text)
 
   sheet.update_cell(row_num + 1, 1, str(discord_id))
-  sheet.update_cell(row_num + 1, 2, cipher_username)
-  sheet.update_cell(row_num + 1, 3, tag_username)
-  sheet.update_cell(row_num + 1, 4, cipher_pass)
-  sheet.update_cell(row_num + 1, 5, tag_pass)
-  sheet.update_cell(row_num + 1, 6, cipher.nonce)
+  sheet.update_cell(row_num + 1, 2, cipher_text)
+  sheet.update_cell(row_num + 1, 3, tag)
+  sheet.update_cell(row_num + 1, 4, cipher.nonce)
 
 
 # 保存したRSO情報を削除する
