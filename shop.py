@@ -35,7 +35,9 @@ def get_skin_data(rso):
       if id in str(skin_data):
         print('skin_data: ', skin_data)
         display_name = skin_data['displayName']
-        display_icon = skin_data['displayIcon']
+        for level_data in skin_data['level']:
+          if level_data['levelItem'] == None: 
+            display_icon = level_data['displayIcon']
         break
 
     cost = ''
