@@ -30,10 +30,8 @@ def get_userdata(discord_id):
       key = os.environ['AES_KEY'].encode()
       cipher = AES.new(key, AES.MODE_EAX, bytes.fromhex(data[3]))
       cipher_text = cipher.decrypt_and_verify(bytes.fromhex(data[1]), bytes.fromhex(data[2]))
-      print(cipher_text.decode())
       username, password = cipher_text.decode().split()
 
-      print(username, password)
       return get_rso_data(username, password)
 
   return None

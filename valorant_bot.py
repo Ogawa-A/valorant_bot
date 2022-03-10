@@ -130,7 +130,7 @@ async def reply(channel, text, mention = None):
 # embedを使って送信
 async def reply_embed(channel, title, image_url):
   embed = discord.Embed(title = title, color = 0x4169e1)
-  embed.set_thumbnailet(url = image_url)
+  embed.set_thumbnail(url = image_url)
   # embed.set_image(url = image_url)
   await channel.send(embed = embed)
 
