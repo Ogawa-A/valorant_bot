@@ -16,7 +16,7 @@ STORE_KEY = ['store', 'ストア', 'ショップ', '']
 @client.event
 async def on_ready():
     print('connect')
-    await client.change_presence(activity = discord.Game(name = 'valorant storeを監視中'))
+    await client.change_presence(activity = discord.Game(name = 'valorant store', activity = discord.Streaming))
 
 @client.event
 async def on_message(message):
@@ -49,7 +49,7 @@ async def on_message(message):
          await reply(message.channel, text)
 
         # ストア情報を取ってくる
-        elif re.sub('<@!\d+>\S*?', message.content, '') in ','.join(STORE_KEY):
+        elif re.sub('<@!\d+>\S*?', message.content, '') in STORE_KEY:
           rso = rso_request.get_userdata(str(message.author.id))
           if rso == None:
             text = 'まずはメンションをつけて「登録」と発言してくれよな'
@@ -74,7 +74,7 @@ async def on_message(message):
         else:
           name = re.sub('<@!\d+>\S*?', message.content, '')
           await message.mentions.edit(nick = name)
-          text = 'ストア情報の取得に失敗しちゃった…'
+          text = '名前を変更したぜ'
           await reply(message.channel, text)
           return
         
