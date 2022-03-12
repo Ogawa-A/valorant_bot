@@ -10,7 +10,7 @@ import shop
 client = discord.Client()
 rso_channels = []
 
-STORE_KEY = ['store', 'ストア', 'ショップ']
+STORE_KEY = ['store', 'ストア', 'ショップ', '']
 
 
 @client.event
@@ -48,7 +48,8 @@ async def on_message(message):
          text = '削除に成功しました' if success else '削除に失敗しました'
          await reply(message.channel, text)
 
-        elif re.sub('<@!\d+>\S*?', message.content, '') in str(STORE_KEY):
+        # ストア情報を取ってくる
+        elif re.sub('<@!\d+>\S*?', message.content, '') in ','.join(STORE_KEY):
           rso = rso_request.get_userdata(str(message.author.id))
           if rso == None:
             text = 'まずはメンションをつけて「登録」と発言してくれよな'
@@ -70,11 +71,10 @@ async def on_message(message):
           for skin in skin_data:
             await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
 
-        elif '名前' in message.content:
-          name = re.sub('<@!\d+>\S*?名前*?', message.content, '')
-
         else:
-          text = 'ショップ情報が知りたかったら store ストア ショップ のどれかをメンション付きで発言してくれよな'
+          name = re.sub('<@!\d+>\S*?', message.content, '')
+          await message.mentions.edit(nick = name)
+          text = 'ストア情報の取得に失敗しちゃった…'
           await reply(message.channel, text)
           return
         
