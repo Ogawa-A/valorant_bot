@@ -16,6 +16,7 @@ STORE_KEY = ['store', 'ストア', 'ショップ']
 @client.event
 async def on_ready():
     print('connect')
+    await client.change_presence(activity = discord.Game(name = 'valorant storeを監視中'))
 
 @client.event
 async def on_message(message):
@@ -69,11 +70,14 @@ async def on_message(message):
           for skin in skin_data:
             await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
 
+        elif '名前' in message.content:
+          name = re.sub('<@!\d+>\S*?名前*?', message.content, '')
+
         else:
           text = 'ショップ情報が知りたかったら store ストア ショップ のどれかをメンション付きで発言してくれよな'
           await reply(message.channel, text)
           return
-          
+        
     # RSO登録用チャンネル内で発言があった場合
     elif message.channel in rso_channels:
       try:
@@ -102,12 +106,11 @@ def randomname(num):
 # 認証用のプライベートチャンネルの作成
 async def create_private_channel(message):
   guild = client.get_guild(int(os.environ['GUILD_ID']))
-  category_channel = guild.get_channel(int(os.environ['CATEGORY_CHANNEL_ID']))
   overwrites = {
     guild.default_role: discord.PermissionOverwrite(read_messages=False),
     guild.me: discord.PermissionOverwrite(read_messages=True)
   }
-  channel = await guild.create_text_channel('registration_{0}'.format(randomname(5)), category = category_channel, overwrites = overwrites)
+  channel = await guild.create_text_channel('registration_{0}'.format(randomname(5)), overwrites = overwrites)
   await channel.set_permissions(message.author, read_messages = True, send_messages = True)
 
   rso_channels.append(channel)  
