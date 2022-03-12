@@ -10,7 +10,7 @@ import shop
 client = discord.Client()
 rso_channels = []
 
-STORE_KEY = ['store', 'ストア', 'ショップ', '']
+STORE_KEY = ['shop', 'store', 'ストア', 'ショップ']
 
 
 @client.event
@@ -49,7 +49,7 @@ async def on_message(message):
          await reply(message.channel, text)
 
         # ストア情報を取ってくる
-        elif re.sub('<@!\d+>\S*?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\S*?', '', message.content) == '':
+        elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
           rso = rso_request.get_userdata(str(message.author.id))
           if rso == None:
             text = 'まずはメンションをつけて「登録」と発言してくれよな'
@@ -72,8 +72,8 @@ async def on_message(message):
             await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
 
         else:
-          name = re.sub('<@!\d+>\S*?', message.content, '')
-          await message.mentions.edit(nick = name)
+          name = re.sub('<@!\d+>\s?', message.content, '')
+          await message.mentions[0].edit(nick = name)
           text = '名前を変更したぜ'
           await reply(message.channel, text)
           return
