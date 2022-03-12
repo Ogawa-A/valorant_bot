@@ -72,7 +72,7 @@ async def on_message(message):
             await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
 
         else:
-          name = re.sub('<@!\d+>\s?', message.content, '')
+          name = re.sub('<@!\d+>\s?', '', message.content)
           guild = client.get_guild(int(os.environ['GUILD_ID']))
           print('name: ', name)
           print('id:',  message.mentions[0].id)
