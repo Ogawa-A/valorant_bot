@@ -49,7 +49,7 @@ async def on_message(message):
          await reply(message.channel, text)
 
         # ストア情報を取ってくる
-        elif re.sub('<@!\d+>\S*?', message.content, '') in STORE_KEY:
+        elif re.sub('<@!\d+>\S*?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\S*?', '', message.content) == '':
           rso = rso_request.get_userdata(str(message.author.id))
           if rso == None:
             text = 'まずはメンションをつけて「登録」と発言してくれよな'
