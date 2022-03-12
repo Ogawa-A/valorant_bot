@@ -73,7 +73,8 @@ async def on_message(message):
 
         else:
           name = re.sub('<@!\d+>\s?', message.content, '')
-          await message.mentions[0].edit(nick = name)
+          guild = client.get_guild(int(os.environ['GUILD_ID']))
+          await guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
           text = '名前を変更したぜ'
           await reply(message.channel, text)
           return
