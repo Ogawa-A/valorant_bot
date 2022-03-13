@@ -35,7 +35,7 @@ async def on_message(message):
         # RSO情報の登録
         elif '登録' in message.content:
           text = 'ユーザー名とパスワードを空白区切りでどうぞ'
-          await message.author.send(text)
+          await reply(message.author.dm_channel, text)
           return
 
         # RSO情報の削除
@@ -75,22 +75,21 @@ async def on_message(message):
           return
         
     # DMで発言があった場合
-    elif message.guild is None:
+    elif message.channel == message.author.dm_channel:
       try:
         username, password = message.content.split()
       except:
         text = '空白区切りでユーザー名とパスワードですぞ'
-        await reply(message.channel, text)
+        await reply(message.author.dm_channel, text)
         return
 
       rso = rso_request.get_rso_data(username, password)
       if rso == None:
         text = 'ログインに失敗したのでもう一回頼む'
-        await reply(message.channel, text)
+        await reply(message.channel.dm_channel, text)
       else:
-        text = '認証に成功したのでbotがつかえるようになったよ。このチャンネルは自動で消しときます'
-        await reply(message.channel, text)
-        await delete_channel(message.channel)
+        text = '認証に成功したのでbotがつかえるようになったよ'
+        await reply(message.channel.dm_channel, text)
         rso_request.set_userdata(message.author.id, username, password)
         return
 
