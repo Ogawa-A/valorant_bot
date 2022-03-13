@@ -41,7 +41,6 @@ async def on_message(message):
             while True:
               if dm_channel != None:
                 break 
-          print(dm_channel)
           await reply(dm_channel, text)
           return
 
@@ -93,10 +92,10 @@ async def on_message(message):
       rso = rso_request.get_rso_data(username, password)
       if rso == None:
         text = 'ログインに失敗したのでもう一回頼む'
-        await reply(message.channel.dm_channel, text)
+        await reply(message.author.dm_channel, text)
       else:
         text = '認証に成功したのでbotがつかえるようになったよ'
-        await reply(message.channel.dm_channel, text)
+        await reply(message.author.dm_channel, text)
         rso_request.set_userdata(message.author.id, username, password)
         return
 
