@@ -73,8 +73,7 @@ async def on_message(message):
 
         else:
           name = re.sub('<@!\d+>\s?', '', message.content)
-          guild = client.get_guild(int(os.environ['GUILD_ID']))
-          await guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
+          await message.guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
           text = '名前を変更したぜ'
           await reply(message.channel, text)
           return
@@ -106,7 +105,7 @@ def randomname(num):
 
 # 認証用のプライベートチャンネルの作成
 async def create_private_channel(message):
-  guild = client.get_guild(int(os.environ['GUILD_ID']))
+  guild = message.guild
   overwrites = {
     guild.default_role: discord.PermissionOverwrite(read_messages=False),
     guild.me: discord.PermissionOverwrite(read_messages=True)
