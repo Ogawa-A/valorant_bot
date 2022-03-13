@@ -37,7 +37,10 @@ async def on_message(message):
           text = 'ユーザー名とパスワードを空白区切りでどうぞ'
           dm_channel = message.author.dm_channel
           if dm_channel == None:
-            dm_channel = message.author.create_dm()
+            dm_channel = await message.author.create_dm()
+            while True:
+              if dm_channel != None:
+                break 
           print(dm_channel)
           await reply(dm_channel, text)
           return
