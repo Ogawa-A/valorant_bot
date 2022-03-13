@@ -107,10 +107,10 @@ def get_rso_data(username, password):
     }
 
     r = session.put('https://auth.riotgames.com/api/v1/authorization', json = data, headers = headers)
+    print('Access Token: ' + r.text)
     pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
     data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
     access_token = data[0]
-    print('Access Token: ' + data)
 
     # entitlements_tokenの取得
     headers = {
