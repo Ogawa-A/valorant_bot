@@ -38,6 +38,7 @@ async def on_message(message):
           dm_channel = message.author.dm_channel
           if dm_channel == None:
             dm_channel = message.author.create_dm()
+          print(dm_channel)
           await reply(dm_channel, text)
           return
 
