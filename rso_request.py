@@ -73,6 +73,7 @@ def get_spreadsheet():
 
 # 認証情報を取得
 def get_rso_data(username, password):
+  print(get_rso_data)
   try:
     class SSLAdapter(HTTPAdapter):
               def init_poolmanager(self, connections, maxsize, block=False):
@@ -95,7 +96,7 @@ def get_rso_data(username, password):
       'response_type': 'token id_token',
     }
     r = session.post('https://auth.riotgames.com/api/v1/authorization', json=data, headers = headers)
-    #print('header:', r.text)
+    print('header:', r.text)
 
     # access_tokenの取得
     data = {
