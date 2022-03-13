@@ -37,7 +37,8 @@ def get_skin_data(rso):
           if level_data['levelItem'] == None: 
             display_icon = level_data['displayIcon']
             break
-        display_name = skin_data['displayIcon']
+        if display_icon == None:
+          display_icon = skin_data['displayIcon']
         break
 
     cost = ''
