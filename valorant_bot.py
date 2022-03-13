@@ -35,9 +35,10 @@ async def on_message(message):
         # RSO情報の登録
         elif '登録' in message.content:
           text = 'ユーザー名とパスワードを空白区切りでどうぞ'
-          if message.author.dm_channel == None:
-            message.author.create_dm()
-          await reply(message.author.dm_channel, text)
+          dm_channel = message.author.dm_channel
+          if dm_channel == None:
+            dm_channel = message.author.create_dm()
+          await reply(dm_channel, text)
           return
 
         # RSO情報の削除
