@@ -34,12 +34,8 @@ async def on_message(message):
 
         # RSO情報の登録
         elif '登録' in message.content:
-          channel = await create_private_channel(message)
-          while True:
-            if channel != None:
-              break
           text = 'ユーザー名とパスワードを空白区切りでどうぞ'
-          await reply(channel, text, message.author.mention)
+          await message.author.send(text)
           return
 
         # RSO情報の削除
@@ -78,8 +74,8 @@ async def on_message(message):
           await reply(message.channel, text)
           return
         
-    # RSO登録用チャンネル内で発言があった場合
-    elif message.channel in rso_channels:
+    # DMで発言があった場合
+    elif message.guild is None:
       try:
         username, password = message.content.split()
       except:
