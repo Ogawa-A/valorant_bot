@@ -19,13 +19,11 @@ class RSO:
 
 # 保存済みの情報のからRSO取得
 def get_userdata(discord_id):
-  print('get_userdata')
   sheet = get_spreadsheet()
   user_data = sheet.get_all_values()
 
   for data in user_data:
     if str(discord_id) in str(data[0]):
-      print('複合化')
       # 複合化
       key = os.environ['AES_KEY'].encode()
       cipher = AES.new(key, AES.MODE_EAX, bytes.fromhex(data[3]))
@@ -75,7 +73,6 @@ def get_spreadsheet():
 
 # 認証情報を取得
 def get_rso_data(username, password):
-  print('get_rso_data')_
   try:
     class SSLAdapter(HTTPAdapter):
               def init_poolmanager(self, connections, maxsize, block=False):
