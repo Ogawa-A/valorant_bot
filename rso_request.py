@@ -19,12 +19,13 @@ class RSO:
 
 # 保存済みの情報のからRSO取得
 def get_userdata(discord_id):
+  print('get_userdata')
   sheet = get_spreadsheet()
   user_data = sheet.get_all_values()
-  
 
   for data in user_data:
     if str(discord_id) in str(data[0]):
+      print('複合化')
       # 複合化
       key = os.environ['AES_KEY'].encode()
       cipher = AES.new(key, AES.MODE_EAX, bytes.fromhex(data[3]))
@@ -51,7 +52,6 @@ def set_userdata(discord_id, username, password):
   sheet.update_cell(row_num + 1, 3, tag.hex())
   sheet.update_cell(row_num + 1, 4, cipher.nonce.hex())
 
-
 # 保存したRSO情報を削除する
 def delete_userdata(discord_id):
   sheet = get_spreadsheet()
@@ -75,6 +75,7 @@ def get_spreadsheet():
 
 # 認証情報を取得
 def get_rso_data(username, password):
+  print('get_rso_data')_
   try:
     class SSLAdapter(HTTPAdapter):
               def init_poolmanager(self, connections, maxsize, block=False):
