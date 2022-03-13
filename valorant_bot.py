@@ -94,7 +94,7 @@ async def on_message(message):
         text = 'ログインに失敗したのでもう一回頼む'
         await reply(message.author.dm_channel, text)
       else:
-        text = '認証に成功したのでbotがつかえるようになったよ'
+        text = '認証に成功したのでbotがつかえるようになったよ！\n今できることはこれ\n ```・今日のショップ情報（メンション単体 or メンション + shop, store, ストア, ショップ）\n・ニックネームの変更（メンション + 変更したい名前）\n・登録した情報の削除（メンション + 削除）```'
         await reply(message.author.dm_channel, text)
         rso_request.set_userdata(message.author.id, username, password)
         return
