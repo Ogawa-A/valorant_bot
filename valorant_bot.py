@@ -51,7 +51,8 @@ async def on_message(message):
          await reply(message.channel, text)
 
         # ストア情報を取ってくる
-        elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
+        #elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
+        else:
           rso = rso_request.get_userdata(str(message.author.id))
           if rso == None:
             text = 'まずはメンションをつけて「登録」と発言してくれよな'
@@ -73,12 +74,12 @@ async def on_message(message):
           for skin in skin_data:
             await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
 
-        else:
-          #name = re.sub('<@!\d+>\s?', '', message.content)
-          #await message.guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
-          #text = '名前を変更したぜ'
-          #await reply(message.channel, text)
-          return
+        #else:
+        #  name = re.sub('<@!\d+>\s?', '', message.content)
+        #  await message.guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
+        #  text = '名前を変更したぜ'
+        #  await reply(message.channel, text)
+        #  return
         
     # DMで発言があった場合
     elif message.channel == message.author.dm_channel:
