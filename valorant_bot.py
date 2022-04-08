@@ -74,10 +74,10 @@ async def on_message(message):
             await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
 
         else:
-          name = re.sub('<@!\d+>\s?', '', message.content)
-          await message.guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
-          text = '名前を変更したぜ'
-          await reply(message.channel, text)
+          #name = re.sub('<@!\d+>\s?', '', message.content)
+          #await message.guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
+          #text = '名前を変更したぜ'
+          #await reply(message.channel, text)
           return
         
     # DMで発言があった場合
