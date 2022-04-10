@@ -50,10 +50,6 @@ async def on_message(message):
          text = '削除に成功しました' if success else '削除に失敗しました'
          await reply(message.channel, text)
 
-        # ナイトマーケット情報を取ってくる
-        elif re.sub('<@!\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
-
-
         # ストア情報を取ってくる
         #elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
         else:
