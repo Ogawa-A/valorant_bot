@@ -1,4 +1,5 @@
 import requests
+import json
 
 # ショップデータを取得
 def get_skin_data(rso):
@@ -75,9 +76,13 @@ def get_night_data(rso):
   offer_skin_data = []
   for offer_data in night_offers:
     print('night_offers')
+    print(type(offer_data))
     print(offer_data)
     display_name = ''
     display_icon = ''
+    offer_data = json.loads(offer_data)
+    print(type(offer_data))
+    print(offer_data)
     item_id = offer_data['Offer']['Rewards']['ItemID']
 
     for skin_data in master_skin_data:
