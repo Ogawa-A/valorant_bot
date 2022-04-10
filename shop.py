@@ -52,6 +52,48 @@ def get_skin_data(rso):
 
   return offer_skin_data
 
+def get_night_data(rso):
+  headers = {
+    "X-Riot-Entitlements-JWT": rso.entitlements_token,
+    "Authorization": f'Bearer {rso.access_token}',
+  }
+
+  # storeの取得
+  url = 'https://pd.AP.a.pvp.net/store/v2/storefront/{0}'.format(rso.user_id)
+  r = requests.get(url, headers=headers)
+
+  night_offers = r.json()['BonusStore']['BonusStoreOffers']
+
+  # masterの取得
+  r = requests.get('https://valorant-api.com/v1/weapons/skins?language=ja-JP')
+  master_skin_data = r.json()['data']
+
+  offer_skin_data = []
+  for offer_data in night_offers:
+    display_name = ''
+    display_icon = ''
+    item_id = night_offers['Offer']['Rewards']['ItemID']
+
+    for skin_data in master_skin_data:
+      if item_id in str(skin_data):
+        print('skin_data: ', skin_data)
+        display_name = skin_data['displayName']
+        for level_data in skin_data['levels']:
+          if level_data['levelItem'] == None: 
+            display_icon = level_data['displayIcon']
+            break
+        if display_icon == None:
+          display_icon = skin_data['displayIcon']
+        break
+
+      base_cost = list(offer_data['Offer']['Cost']).values()[0]
+      discount_per = offer_data['DiscountPercent']
+      cost = list(offer_data['DiscountCosts']).values()[0]
+
+      cost_text = '{0} ({1}:{2}% OFF)'.format(cost, base_cost, discount_per)
+      offer_skin_data.append([display_name, cost_text, display_icon])
+  
+
 """ # 画像URLからndarray形式で画像を取得
 def create_image_file(data):
   image = None

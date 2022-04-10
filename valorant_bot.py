@@ -11,7 +11,7 @@ client = discord.Client()
 rso_channels = []
 
 STORE_KEY = ['shop', 'store', 'ストア', 'ショップ']
-
+NIGHT_STORE_KEY = ['night', 'ナイト', 'ナイトストア', 'マーケット', 'ナイトマーケット', 'リサイクルショップ']
 
 @client.event
 async def on_ready():
@@ -50,6 +50,10 @@ async def on_message(message):
          text = '削除に成功しました' if success else '削除に失敗しました'
          await reply(message.channel, text)
 
+        # ナイトマーケット情報を取ってくる
+        elif re.sub('<@!\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
+
+
         # ストア情報を取ってくる
         #elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
         else:
@@ -59,7 +63,11 @@ async def on_message(message):
             await reply(message.channel, text)
             return
 
-          skin_data = shop.get_skin_data(rso)
+          skin_data = []
+          if re.sub('<@!\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
+            skin_data = shop.get_night_data(rso)
+          else:
+            skin_data = shop.get_skin_data(rso)
           if len(skin_data) == 0:
             text = 'ストア情報の取得に失敗しちゃった…'
             await reply(message.channel, text)
