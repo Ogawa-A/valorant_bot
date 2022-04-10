@@ -61,9 +61,15 @@ def get_night_data(rso):
   url = 'https://pd.AP.a.pvp.net/store/v2/storefront/{0}'.format(rso.user_id)
   r = requests.get(url, headers=headers)
 
-  night_offers = r.json()['BonusStore']['BonusStoreOffers']
+  print(r.json())
+  try:
+    night_offers = r.json()['BonusStore']['BonusStoreOffers']
+  except:
+    print(url, '/n', r.json())
+    return []
 
   print(night_offers)
+
   # masterの取得
   r = requests.get('https://valorant-api.com/v1/weapons/skins?language=ja-JP')
   master_skin_data = r.json()['data']
