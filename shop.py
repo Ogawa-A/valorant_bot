@@ -79,9 +79,8 @@ def get_night_data(rso):
     display_name = ''
     display_icon = ''
     print(offer_data['Offer'])
-    print(type(offer_data['Offer']['Rewards']))
     print(offer_data['Offer']['Rewards'][0])
-    item_id = offer_data['Offer']['Rewards'][1]
+    item_id = offer_data['Offer']['Rewards'][0]['ItemID']
 
     for skin_data in master_skin_data:
       if item_id in str(skin_data):
