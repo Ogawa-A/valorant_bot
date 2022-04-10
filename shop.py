@@ -95,7 +95,7 @@ def get_night_data(rso):
     discount_per = offer_data['DiscountPercent']
     cost = list(offer_data['DiscountCosts'].values())[0]
 
-    cost_text = '{0} (~~{1}~~　{2}% OFF)'.format(cost, base_cost, discount_per)
+    cost_text = '{0}（~~{1}~~ {2}% OFF）'.format(cost, base_cost, discount_per)
     offer_skin_data.append([display_name, cost_text, display_icon])
   
   return offer_skin_data
