@@ -78,8 +78,6 @@ def get_night_data(rso):
     print(offer_data)
     display_name = ''
     display_icon = ''
-    print(offer_data['Offer'])
-    print(offer_data['Offer']['Rewards'][0])
     item_id = offer_data['Offer']['Rewards'][0]['ItemID']
 
     for skin_data in master_skin_data:
@@ -93,6 +91,8 @@ def get_night_data(rso):
           display_icon = skin_data['displayIcon']
         break
 
+      print(offer_data['Offer']['Cost'])
+      print(type(offer_data['Offer']['Cost']))
       base_cost = list(offer_data['Offer']['Cost']).values()[0]
       discount_per = offer_data['DiscountPercent']
       cost = list(offer_data['DiscountCosts']).values()[0]
