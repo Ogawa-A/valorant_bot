@@ -68,8 +68,6 @@ def get_night_data(rso):
     print(url, '/n', r.json())
     return []
 
-  print(night_offers)
-
   # masterの取得
   r = requests.get('https://valorant-api.com/v1/weapons/skins?language=ja-JP')
   master_skin_data = r.json()['data']
@@ -77,6 +75,7 @@ def get_night_data(rso):
   offer_skin_data = []
   for offer_data in night_offers:
     print('night_offers')
+    print(offer_data)
     display_name = ''
     display_icon = ''
     item_id = night_offers['Offer']['Rewards']['ItemID']
