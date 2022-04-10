@@ -60,6 +60,8 @@ async def on_message(message):
             return
 
           skin_data = []
+          print(re.sub('<@!\d+>\s?', '', message.content))
+          print(re.sub('<@!\d+>\s?', '', message.content) in NIGHT_STORE_KEY)
           if re.sub('<@!\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
             skin_data = shop.get_night_data(rso)
           else:
