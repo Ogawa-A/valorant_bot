@@ -91,14 +91,13 @@ def get_night_data(rso):
           display_icon = skin_data['displayIcon']
         break
 
-      print(offer_data['Offer']['Cost'])
-      print(type(offer_data['Offer']['Cost']))
-      base_cost = list(offer_data['Offer']['Cost'].values())[0]
-      discount_per = offer_data['DiscountPercent']
-      cost = list(offer_data['DiscountCosts'].values())[0]
+    print(list(offer_data['Offer']['Cost'].values())[0])
+    base_cost = list(offer_data['Offer']['Cost'].values())[0]
+    discount_per = offer_data['DiscountPercent']
+    cost = list(offer_data['DiscountCosts'].values())[0]
 
-      cost_text = '{0} ({1}:{2}% OFF)'.format(cost, base_cost, discount_per)
-      offer_skin_data.append([display_name, cost_text, display_icon])
+    cost_text = '{0} ({1}:{2}% OFF)'.format(cost, base_cost, discount_per)
+    offer_skin_data.append([display_name, cost_text, display_icon])
   
 
 """ # 画像URLからndarray形式で画像を取得
