@@ -52,7 +52,6 @@ def get_skin_data(rso):
   return offer_skin_data
 
 def get_night_data(rso):
-  print('get_night_data')
   headers = {
     "X-Riot-Entitlements-JWT": rso.entitlements_token,
     "Authorization": f'Bearer {rso.access_token}',
@@ -64,7 +63,7 @@ def get_night_data(rso):
 
   print(r.json())
   try:
-    night_offers = r.json()['BonusStore']['BonusStoreOffers']
+    night_offers = list(r.json()['BonusStore']['BonusStoreOffers'])
   except:
     print(url, '/n', r.json())
     return []
