@@ -75,18 +75,15 @@ def get_night_data(rso):
 
   offer_skin_data = []
   for offer_data in night_offers:
-    print('night_offers')
-    print(type(offer_data))
     print(offer_data)
     display_name = ''
     display_icon = ''
     print(offer_data['Offer'])
-    print(offer_data['Offer']['Rewards'])
+    print(type(offer_data['Offer']['Rewards']))
     item_id = offer_data['Offer']['Rewards']['ItemID']
 
     for skin_data in master_skin_data:
       if item_id in str(skin_data):
-        print('skin_data: ', skin_data)
         display_name = skin_data['displayName']
         for level_data in skin_data['levels']:
           if level_data['levelItem'] == None: 
