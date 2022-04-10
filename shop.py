@@ -99,6 +99,8 @@ def get_night_data(rso):
     cost_text = '{0} ({1}:{2}% OFF)'.format(cost, base_cost, discount_per)
     offer_skin_data.append([display_name, cost_text, display_icon])
   
+  return offer_skin_data
+  
 
 """ # 画像URLからndarray形式で画像を取得
 def create_image_file(data):
