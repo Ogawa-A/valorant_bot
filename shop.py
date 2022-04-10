@@ -64,7 +64,7 @@ def get_night_data(rso):
 
   print(r.json())
   try:
-    night_offers = list(r.json()['BonusStore']['BonusStoreOffers'])
+    night_offers = r.json()['BonusStore']['BonusStoreOffers']
   except:
     print(url, '/n', r.json())
     return []
@@ -80,7 +80,8 @@ def get_night_data(rso):
     display_icon = ''
     print(offer_data['Offer'])
     print(type(offer_data['Offer']['Rewards']))
-    item_id = offer_data['Offer']['Rewards']['ItemID']
+    print(offer_data['Offer']['Rewards'][0])
+    item_id = offer_data['Offer']['Rewards'][1]
 
     for skin_data in master_skin_data:
       if item_id in str(skin_data):
