@@ -11,6 +11,7 @@ def get_skin_data(rso):
   url = 'https://pd.AP.a.pvp.net/store/v2/storefront/{0}'.format(rso.user_id)
   r = requests.get(url, headers=headers)
 
+  print(r.json())
   try:
     store_skin_ids = r.json()['SkinsPanelLayout']['SingleItemOffers']
   except:
