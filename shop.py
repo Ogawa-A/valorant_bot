@@ -80,9 +80,8 @@ def get_night_data(rso):
     print(offer_data)
     display_name = ''
     display_icon = ''
-    offer_data = json.loads(offer_data)
-    print(type(offer_data))
-    print(offer_data)
+    print(offer_data['Offer'])
+    print(offer_data['Offer']['Rewards'])
     item_id = offer_data['Offer']['Rewards']['ItemID']
 
     for skin_data in master_skin_data:
