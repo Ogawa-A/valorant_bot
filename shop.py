@@ -52,6 +52,7 @@ def get_skin_data(rso):
   return offer_skin_data
 
 def get_night_data(rso):
+  print('get_night_data')
   headers = {
     "X-Riot-Entitlements-JWT": rso.entitlements_token,
     "Authorization": f'Bearer {rso.access_token}',
@@ -76,6 +77,7 @@ def get_night_data(rso):
 
   offer_skin_data = []
   for offer_data in night_offers:
+    print('night_offers')
     display_name = ''
     display_icon = ''
     item_id = night_offers['Offer']['Rewards']['ItemID']
