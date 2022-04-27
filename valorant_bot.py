@@ -20,73 +20,74 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author.bot or message.type == 'reply':
+  print(message.type)
+  if message.author.bot or message.type == 'reply':
+      return
+  if client.user in message.mentions:
+      global connectChannel
+      if 'ばいばい' in message.content:
+          await client.logout()
+          return
+
+      # RSO登録用チャンネルだったら無視
+      elif message.channel in rso_channels:
         return
-    if client.user in message.mentions:
-        global connectChannel
-        if 'ばいばい' in message.content:
-            await client.logout()
-            return
 
-        # RSO登録用チャンネルだったら無視
-        elif message.channel in rso_channels:
+      # RSO情報の登録
+      elif '登録' in message.content:
+        text = 'ユーザー名とパスワードを空白区切りでどうぞ'
+        dm_channel = message.author.dm_channel
+        if dm_channel == None:
+          dm_channel = await message.author.create_dm()
+          while True:
+            if dm_channel != None:
+              break 
+        await reply(dm_channel, text)
+        return
+
+      # RSO情報の削除
+      elif '削除' in message.content:
+        success = rso_request.delete_userdata(str(message.author.id))
+        text = '削除に成功しました' if success else '削除に失敗しました'
+        await reply(message.channel, text)
+
+      # ストア情報を取ってくる
+      #elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
+      else:
+        rso = rso_request.get_userdata(str(message.author.id))
+        if rso == None:
+          text = 'まずはメンションをつけて「登録」と発言してくれよな'
+          await reply(message.channel, text)
           return
 
-        # RSO情報の登録
-        elif '登録' in message.content:
-          text = 'ユーザー名とパスワードを空白区切りでどうぞ'
-          dm_channel = message.author.dm_channel
-          if dm_channel == None:
-            dm_channel = await message.author.create_dm()
-            while True:
-              if dm_channel != None:
-                break 
-          await reply(dm_channel, text)
-          return
-
-        # RSO情報の削除
-        elif '削除' in message.content:
-         success = rso_request.delete_userdata(str(message.author.id))
-         text = '削除に成功しました' if success else '削除に失敗しました'
-         await reply(message.channel, text)
-
-        # ストア情報を取ってくる
-        #elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
+        skin_data = []
+        if re.sub('<@\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
+          skin_data = shop.get_night_data(rso)
         else:
-          rso = rso_request.get_userdata(str(message.author.id))
-          if rso == None:
-            text = 'まずはメンションをつけて「登録」と発言してくれよな'
-            await reply(message.channel, text)
-            return
+          skin_data = shop.get_skin_data(rso)
+        if len(skin_data) == 0:
+          text = 'ストア情報の取得に失敗しちゃった…'
+          await reply(message.channel, text)
+          return
 
-          skin_data = []
-          if re.sub('<@\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
-            skin_data = shop.get_night_data(rso)
-          else:
-            skin_data = shop.get_skin_data(rso)
-          if len(skin_data) == 0:
-            text = 'ストア情報の取得に失敗しちゃった…'
-            await reply(message.channel, text)
-            return
+        emojis = client.emojis
+        emoji_VP = ''
+        for emoji in emojis:
+          if 'VP' == str(emoji.name):
+            emoji_VP = ('<:VP:{0}>').format(emoji.id)
+            break
+        for skin in skin_data:
+          await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
 
-          emojis = client.emojis
-          emoji_VP = ''
-          for emoji in emojis:
-            if 'VP' == str(emoji.name):
-              emoji_VP = ('<:VP:{0}>').format(emoji.id)
-              break
-          for skin in skin_data:
-            await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
-
-        #else:
-        #  name = re.sub('<@!\d+>\s?', '', message.content)
-        #  await message.guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
-        #  text = '名前を変更したぜ'
-        #  await reply(message.channel, text)
-        #  return
-        
-    # DMで発言があった場合
-    elif message.channel == message.author.dm_channel:
+      #else:
+      #  name = re.sub('<@!\d+>\s?', '', message.content)
+      #  await message.guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
+      #  text = '名前を変更したぜ'
+      #  await reply(message.channel, text)
+      #  return
+      
+  # DMで発言があった場合
+  elif message.channel == message.author.dm_channel:
       try:
         username, password = message.content.split()
       except:
