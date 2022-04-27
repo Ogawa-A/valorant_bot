@@ -20,7 +20,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-  print(message.type)
+  print(message)
   if message.author.bot or message.type == 'reply':
       return
   if client.user in message.mentions:
