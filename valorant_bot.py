@@ -20,10 +20,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-
-  print(message.interactions)
-
-  if message.author.bot or message.type == 'reply':
+  if message.author.bot:
       return
   if client.user in message.mentions:
       global connectChannel
