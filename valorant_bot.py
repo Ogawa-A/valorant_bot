@@ -21,7 +21,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
   print(message.activity)
-  print(message.interaction)
+  #print(message.interaction)
   print(message.raw_mentions)
 
   if message.author.bot or message.type == 'reply':
