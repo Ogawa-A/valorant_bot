@@ -17,6 +17,9 @@ class RSO:
   entitlements_token : str
   user_id : str
 
+class MultifactorException(Exception):
+    pass
+
 # 保存済みの情報のからRSO取得
 def get_userdata(discord_id):
   sheet = get_spreadsheet()
@@ -106,9 +109,11 @@ def get_rso_data(username, password):
 
     r = session.put('https://auth.riotgames.com/api/v1/authorization', json = data, headers = headers)
     pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
-    data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
-    access_token = data[0]
     access_result_type = r.json()['type']
+    if r.json()['type'] == 'multifactor':
+      raise MultifactorException('multifactor')
+    data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
+    access_token = data[0]    
 
     # entitlements_tokenの取得
     headers = {
@@ -131,11 +136,11 @@ def get_rso_data(username, password):
     r = session.post('https://auth.riotgames.com/userinfo', headers=headers, json={})
     user_id = r.json()['sub']
 
+  except MultifactorException as e:
+    return e
   except:
-    session.close()
-    if access_result_type == '':
-      return 'multifactor'
     return None
-  else:
+  else: 
+    return RSO(access_token, entitlements_token, user_id) 
+  finally:
     session.close()
-    return RSO(access_token, entitlements_token, user_id)
