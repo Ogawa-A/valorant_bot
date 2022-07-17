@@ -22,8 +22,6 @@ def get_userdata(discord_id):
   sheet = get_spreadsheet()
   user_data = sheet.get_all_values()
 
-  print('discord id : {0}'.format(discord_id))
-
   for data in user_data:
     if str(discord_id) in str(data[0]):
       # 複合化
@@ -32,7 +30,6 @@ def get_userdata(discord_id):
       cipher_text = cipher.decrypt_and_verify(bytes.fromhex(data[1]), bytes.fromhex(data[2]))
       username, password = cipher_text.decode().split()
 
-      print('username : {0}, password : {1}'.format(username, password))
       return get_rso_data(username, password)
 
   return None
@@ -76,7 +73,6 @@ def get_spreadsheet():
 
 # 認証情報を取得
 def get_rso_data(username, password):
-  print(get_rso_data)
   try:
     class SSLAdapter(HTTPAdapter):
               def init_poolmanager(self, connections, maxsize, block=False):
@@ -99,7 +95,6 @@ def get_rso_data(username, password):
       'response_type': 'token id_token',
     }
     r = session.post('https://auth.riotgames.com/api/v1/authorization', json=data, headers = headers)
-    print('header:', r.text)
 
     # access_tokenの取得
     data = {
@@ -110,10 +105,10 @@ def get_rso_data(username, password):
     }
 
     r = session.put('https://auth.riotgames.com/api/v1/authorization', json = data, headers = headers)
-    print('Access Token: ' + r.text)
     pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
     data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
     access_token = data[0]
+    print(data[0])
 
     # entitlements_tokenの取得
     headers = {
@@ -124,7 +119,6 @@ def get_rso_data(username, password):
     }
     r = session.post('https://entitlements.auth.riotgames.com/api/token/v1', headers=headers, json={})
     entitlements_token = r.json()['entitlements_token']
-    print('Entitlements Token: ' + entitlements_token)  
 
     # user_idの取得
     headers = {
