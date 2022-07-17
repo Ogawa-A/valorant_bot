@@ -1,6 +1,6 @@
 import requests
 
-def get_skin_data(rso):
+def get_user_skin_data(rso):
   headers = {
     "X-Riot-Entitlements-JWT": rso.entitlements_token,
     "Authorization": f'Bearer {rso.access_token}',
