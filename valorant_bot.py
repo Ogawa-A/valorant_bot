@@ -58,6 +58,7 @@ async def on_message(message):
       #elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
       else:
         rso = rso_request.get_userdata(str(message.author.id))
+        print(rso)
         if rso == 'nodata':
           text = 'まずはメンションをつけて「登録」と発言してくれよな'
           await reply(message.channel, text)

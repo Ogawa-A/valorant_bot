@@ -109,9 +109,8 @@ def get_rso_data(username, password):
 
     r = session.put('https://auth.riotgames.com/api/v1/authorization', json = data, headers = headers)
     pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
-    access_result_type = r.json()['type']
     if r.json()['type'] == 'multifactor':
-      raise MultifactorException('multifactor')
+      raise MultifactorException
     data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
     access_token = data[0]    
 
@@ -137,7 +136,7 @@ def get_rso_data(username, password):
     user_id = r.json()['sub']
 
   except MultifactorException as e:
-    return e
+    return 'multifactor'
   except:
     return None
   else: 
