@@ -1,17 +1,15 @@
 import re
 import os
 import discord
-import string
-import random
-import asyncio
 import rso_request
 import shop
 
 client = discord.Client()
-rso_channels = []
 
-STORE_KEY = ['shop', 'store', 'ストア', 'ショップ']
 NIGHT_STORE_KEY = ['night', 'ナイト', 'ナイトストア', 'マーケット', 'ナイトマーケット', 'リサイクルショップ']
+REGISTER_KEY = ['登録']
+DEDELETE_KEY = ['削除']
+CREATE_CHANNEL_KEY = ['ch create']
 
 @client.event
 async def on_ready():
@@ -28,12 +26,8 @@ async def on_message(message):
           await client.logout()
           return
 
-      # RSO登録用チャンネルだったら無視
-      elif message.channel in rso_channels:
-        return
-
       # RSO情報の登録
-      elif '登録' in message.content:
+      elif re.sub('<@\d+>\s?', '', message.content) in REGISTER_KEY:
         text = 'ユーザー名とパスワードを空白区切りでどうぞ'
         dm_channel = message.author.dm_channel
         if dm_channel == None:
@@ -45,17 +39,17 @@ async def on_message(message):
         return
 
       # RSO情報の削除
-      elif '削除' in message.content:
+      elif re.sub('<@\d+>\s?', '', message.content) in DEDELETE_KEY:
         success = rso_request.delete_userdata(str(message.author.id))
         text = '削除に成功しました' if success else '削除に失敗しました'
         await reply(message.channel, text)
 
       # テキストチャンネルを作る
-      #elif 'create channel' in message.content:
+      elif re.sub('<@\d+>\s?', '', message.content) in CREATE_CHANNEL_KEY:
+        await create_text_channel(message)
         
 
       # ストア情報を取ってくる
-      #elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
       else:
         rso = rso_request.get_userdata(str(message.author.id))
         print(rso)
@@ -114,35 +108,27 @@ async def on_message(message):
         text = 'ログインに失敗したのでもう一回頼む'
         await reply(message.author.dm_channel, text)
       else:
-        text = '認証に成功したのでbotがつかえるようになったよ！\n今できることはこれ ```・今日のショップ情報（メンション単体 or メンション + shop, store, ストア, ショップ）\n・ナイトマーケット情報（メンション + night, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ）\n・登録した情報の削除（メンション + 削除）```'
+        text = '認証に成功したのでbotがつかえるようになったよ！\n今できることはこれ ```・今日のショップ情報（メンション）\n・ナイトマーケット情報（メンション + night, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ）\n・登録した情報の削除（メンション + 削除）```'
         await reply(message.author.dm_channel, text)
         rso_request.set_userdata(message.author.id, username, password)
         return
 
-# ランダム文字列の生成
-def randomname(num):
-   randlst = [random.choice(string.ascii_letters + string.digits) for i in range(num)]
-   return ''.join(randlst)
+# テキストチャンネルの作成
+async def create_text_channel(message):
+  #overwrites = {
+  #  guild.default_role: discord.PermissionOverwrite(read_messages=False),
+  #  guild.me: discord.PermissionOverwrite(read_messages=True)
+  #}
+  #channel = await guild.create_text_channel('聞き専', overwrites = overwrites)
+  if message.channel.category != None:
+    category = message.channel.category
+    await category.create_text_channel('text_ch')
+  else:
+    guild = message.guild
+    await guild.create_text_channel('text_ch')
+  #await channel.set_permissions(message.author, read_messages = True, send_messages = True) 
 
-# 認証用のプライベートチャンネルの作成
-async def create_private_channel(message):
-  guild = message.guild
-  overwrites = {
-    guild.default_role: discord.PermissionOverwrite(read_messages=False),
-    guild.me: discord.PermissionOverwrite(read_messages=True)
-  }
-  channel = await guild.create_text_channel('registration_{0}'.format(randomname(5)), overwrites = overwrites)
-  await channel.set_permissions(message.author, read_messages = True, send_messages = True)
 
-  rso_channels.append(channel)  
-
-  return channel
-
-# チャンネルの削除
-async def delete_channel(channel):
-  await asyncio.sleep(5)
-  await channel.delete()
-  rso_channels.remove(channel)
 
 # 返信
 async def reply(channel, text, mention = None):
