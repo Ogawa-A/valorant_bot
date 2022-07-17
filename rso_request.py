@@ -22,6 +22,8 @@ def get_userdata(discord_id):
   sheet = get_spreadsheet()
   user_data = sheet.get_all_values()
 
+  print('discord id : {0}'.format(discord_id))
+
   for data in user_data:
     if str(discord_id) in str(data[0]):
       # 複合化
@@ -30,6 +32,7 @@ def get_userdata(discord_id):
       cipher_text = cipher.decrypt_and_verify(bytes.fromhex(data[1]), bytes.fromhex(data[2]))
       username, password = cipher_text.decode().split()
 
+      print('username : {0}, password : {1}'.format(username, password))
       return get_rso_data(username, password)
 
   return None
