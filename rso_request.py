@@ -73,7 +73,6 @@ def get_spreadsheet():
 
 # 認証情報を取得
 def get_rso_data(username, password):
-  return None
   try:
     class SSLAdapter(HTTPAdapter):
               def init_poolmanager(self, connections, maxsize, block=False):
