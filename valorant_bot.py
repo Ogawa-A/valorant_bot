@@ -1,6 +1,5 @@
 import re
 import os
-from tkinter.messagebox import NO
 import discord
 import string
 import random
