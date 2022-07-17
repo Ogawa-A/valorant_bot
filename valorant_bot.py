@@ -3,6 +3,7 @@ import os
 import discord
 import rso_request
 import shop
+import select_skin
 
 client = discord.Client()
 
@@ -10,6 +11,7 @@ NIGHT_STORE_KEY = ['night', 'ナイト', 'ナイトストア', 'マーケット'
 REGISTER_KEY = ['登録']
 DEDELETE_KEY = ['削除']
 CREATE_CHANNEL_KEY = ['ch create']
+SELECT_VANDAL_SKIN = ['vandal', 'v', 'ヴァンダル']
 
 @client.event
 async def on_ready():
@@ -47,27 +49,15 @@ async def on_message(message):
       # テキストチャンネルを作る
       elif re.sub('<@\d+>\s?', '', message.content) in CREATE_CHANNEL_KEY:
         await create_text_channel(message)
-        
+
+      # ヴァンダルのスキンを選ぶ  
+      elif re.sub('<@\d+>\s?', '', message.content) in SELECT_VANDAL_SKIN:
+        rso = await get_rso(message)
+        user_skins = select_skin.get_user_skin_data(rso)
 
       # ストア情報を取ってくる
       else:
-        rso = rso_request.get_userdata(str(message.author.id))
-        print(rso)
-        if rso == 'nodata':
-          text = 'まずはメンションをつけて「登録」と発言してくれよな'
-          await reply(message.channel, text)
-          return
-
-        if rso == 'multifactor':
-          text = '二要素認証くんにはじかれちゃった…'
-          await reply(message.channel, text)
-          return
-
-        if rso == None:
-          text = '<@325308386985902090> たすけて'
-          await reply(message.channel, text)
-          return
-
+        rso = get_rso(message)
         skin_data = []
         if re.sub('<@\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
           skin_data = shop.get_night_data(rso)
@@ -113,6 +103,21 @@ async def on_message(message):
         rso_request.set_userdata(message.author.id, username, password)
         return
 
+# rsoデータの取得
+async def get_rso(message):
+  rso = rso_request.get_userdata(str(message.author.id))
+  if rso == 'nodata':
+    text = 'まずはメンションをつけて「登録」と発言してくれよな'
+    await reply(message.channel, text)
+  elif rso == 'multifactor':
+    text = '二要素認証くんにはじかれちゃった…'
+    await reply(message.channel, text)
+  elif rso == None:
+    text = '<@325308386985902090> たすけて'
+    await reply(message.channel, text)
+  else:
+    return rso
+
 # テキストチャンネルの作成
 async def create_text_channel(message):
   #overwrites = {
@@ -128,8 +133,6 @@ async def create_text_channel(message):
     await guild.create_text_channel('text_ch')
   #await channel.set_permissions(message.author, read_messages = True, send_messages = True) 
 
-
-
 # 返信
 async def reply(channel, text, mention = None):
   if mention != None:
@@ -143,7 +146,6 @@ async def reply_embed(channel, title, image_url):
   #embed.set_thumbnail(url = image_url)
   embed.set_image(url = image_url)
   await channel.send(embed = embed)
-
 
 client.run(os.environ['DISCORD_TOKEN'])
 

@@ -52,6 +52,7 @@ def get_skin_data(rso):
 
   return offer_skin_data
 
+# ナイトマーケットの取得
 def get_night_data(rso):
   headers = {
     "X-Riot-Entitlements-JWT": rso.entitlements_token,
@@ -99,7 +100,6 @@ def get_night_data(rso):
     offer_skin_data.append([display_name, cost_text, display_icon])
   
   return offer_skin_data
-  
 
 """ # 画像URLからndarray形式で画像を取得
 def create_image_file(data):
