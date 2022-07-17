@@ -108,7 +108,7 @@ def get_rso_data(username, password):
     pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
     data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
     access_token = data[0]
-    print(data[0])
+    print(r.json()['type'])
 
     # entitlements_tokenの取得
     headers = {
