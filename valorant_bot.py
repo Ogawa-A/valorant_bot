@@ -52,12 +52,13 @@ async def on_message(message):
 
       # ヴァンダルのスキンを選ぶ  
       elif re.sub('<@\d+>\s?', '', message.content) in SELECT_VANDAL_SKIN:
+        print('vandal')
         rso = await get_rso(message)
         user_skins = select_skin.get_user_skin_data(rso)
 
       # ストア情報を取ってくる
       else:
-        rso = get_rso(message)
+        rso = await get_rso(message)
         skin_data = []
         if re.sub('<@\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
           skin_data = shop.get_night_data(rso)
