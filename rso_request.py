@@ -32,7 +32,7 @@ def get_userdata(discord_id):
 
       return get_rso_data(username, password)
 
-  return None
+  return 'nodata'
 
 # ユーザー情報を保存する
 def set_userdata(discord_id, username, password):
@@ -108,7 +108,7 @@ def get_rso_data(username, password):
     pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
     data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
     access_token = data[0]
-    print(r.json()['type'])
+    access_result_type = r.json()['type']
 
     # entitlements_tokenの取得
     headers = {
@@ -133,6 +133,8 @@ def get_rso_data(username, password):
 
   except:
     session.close()
+    if access_result_type == '':
+      return 'multifactor'
     return None
   else:
     session.close()

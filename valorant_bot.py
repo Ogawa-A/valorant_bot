@@ -1,5 +1,6 @@
 import re
 import os
+from tkinter.messagebox import NO
 import discord
 import string
 import random
@@ -50,12 +51,26 @@ async def on_message(message):
         text = '削除に成功しました' if success else '削除に失敗しました'
         await reply(message.channel, text)
 
+      # テキストチャンネルを作る
+      #elif 'create channel' in message.content:
+        
+
       # ストア情報を取ってくる
       #elif re.sub('<@!\d+>\s?', '', message.content) in STORE_KEY or re.sub('<@!\d+>\s?', '', message.content) == '':
       else:
         rso = rso_request.get_userdata(str(message.author.id))
-        if rso == None:
+        if rso == 'nodata':
           text = 'まずはメンションをつけて「登録」と発言してくれよな'
+          await reply(message.channel, text)
+          return
+
+        if rso == 'multifactor':
+          text = '二要素認証くんにはじかれちゃった…'
+          await reply(message.channel, text)
+          return
+
+        if rso == None:
+          text = '<@325308386985902090> たすけて'
           await reply(message.channel, text)
           return
 
@@ -99,7 +114,7 @@ async def on_message(message):
         text = 'ログインに失敗したのでもう一回頼む'
         await reply(message.author.dm_channel, text)
       else:
-        text = '認証に成功したのでbotがつかえるようになったよ！\n今できることはこれ ```・今日のショップ情報（メンション単体 or メンション + shop, store, ストア, ショップ）\n・ニックネームの変更（メンション + 変更したい名前）\n・登録した情報の削除（メンション + 削除）```'
+        text = '認証に成功したのでbotがつかえるようになったよ！\n今できることはこれ ```・今日のショップ情報（メンション単体 or メンション + shop, store, ストア, ショップ）\n・ナイトマーケット情報（メンション + night, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ）\n・登録した情報の削除（メンション + 削除）```'
         await reply(message.author.dm_channel, text)
         rso_request.set_userdata(message.author.id, username, password)
         return
