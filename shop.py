@@ -1,6 +1,23 @@
 import requests
 import json
 
+def get_master_data(master_skin_data, id):
+  display_name = ''
+  display_icon = ''
+
+  for skin_data in master_skin_data:
+    if id in str(skin_data):
+      display_name = skin_data['displayName']
+      for level_data in skin_data['levels']:
+        if level_data['levelItem'] == None: 
+          display_icon = level_data['displayIcon']
+          break
+      if display_icon == None:
+        display_icon = skin_data['displayIcon']
+      break
+
+  return display_name, display_icon
+
 # ショップデータを取得
 def get_skin_data(rso):
   headers = {
@@ -28,19 +45,7 @@ def get_skin_data(rso):
   master_skin_data = r.json()['data']
   offer_skin_data = []
   for id in store_skin_ids:
-    display_name = ''
-    display_icon = ''
-    for skin_data in master_skin_data:
-      if id in str(skin_data):
-        print('skin_data: ', skin_data)
-        display_name = skin_data['displayName']
-        for level_data in skin_data['levels']:
-          if level_data['levelItem'] == None: 
-            display_icon = level_data['displayIcon']
-            break
-        if display_icon == None:
-          display_icon = skin_data['displayIcon']
-        break
+    display_name, display_icon = get_master_data(master_skin_data, id)
 
     cost = ''
     for offer in offers:
@@ -75,23 +80,10 @@ def get_night_data(rso):
   master_skin_data = r.json()['data']
 
   offer_skin_data = []
-  for offer_data in night_offers:
-    print(offer_data)
-    display_name = ''
-    display_icon = ''
+  for offer_data in night_offers:   
     item_id = offer_data['Offer']['Rewards'][0]['ItemID']
-
-    for skin_data in master_skin_data:
-      if item_id in str(skin_data):
-        display_name = skin_data['displayName']
-        for level_data in skin_data['levels']:
-          if level_data['levelItem'] == None: 
-            display_icon = level_data['displayIcon']
-            break
-        if display_icon == None:
-          display_icon = skin_data['displayIcon']
-        break
-
+    display_name, display_icon = get_master_data(master_skin_data, item_id)
+   
     base_cost = list(offer_data['Offer']['Cost'].values())[0]
     discount_per = offer_data['DiscountPercent']
     cost = list(offer_data['DiscountCosts'].values())[0]
