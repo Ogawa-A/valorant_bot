@@ -4,14 +4,22 @@ import discord
 import rso_request
 import shop
 import select_skin
+import dataclasses
+from typing import List
 
 client = discord.Client()
 
 NIGHT_STORE_KEY = ['night', 'ナイト', 'ナイトストア', 'マーケット', 'ナイトマーケット', 'リサイクルショップ']
-REGISTER_KEY = ['登録']
-DEDELETE_KEY = ['削除']
+REGISTER_KEY = ['登録', 'registration']
+DEDELETE_KEY = ['削除', 'delete']
 CREATE_CHANNEL_KEY = ['ch create']
+HELP_KEY = ['help', '-h', 'h']
 SELECT_VANDAL_SKIN = ['vandal', 'v', 'ヴァンダル']
+
+@dataclasses.dataclass
+class Embed_field:
+  name : str
+  value : str
 
 @client.event
 async def on_ready():
@@ -39,6 +47,15 @@ async def on_message(message):
               break 
         await reply(dm_channel, text)
         return
+
+      elif re.sub('<@\d+>\s?', '', message.content) in HELP_KEY:
+        title = '# Read me'
+        fields = []
+        fields.append(Embed_field('ユーザー情報の登録', '``` Botに向けてメンション + 登録\n ・DMがBotから届くはずですが、届かなかった場合以下を確認してください\n  - 設定 > プライバシー・安全 > サーバーにいるメンバーからのダイレクトメッセージを許可する がオンになっていること```'))
+        fields.append(Embed_field('今日のショップ情報取得', '``` Botに向けてメンション```'))
+        fields.append(Embed_field('ナイトマーケット情報取得', '``` Botに向けてメンション + 以下の文言のうちどれか\n night, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ```'))
+        fields.append(Embed_field('ユーザー登録の削除', '``` Botに向けてメンション + 削除```'))
+        await reply_embed(message.channel, title, '', )
 
       # RSO情報の削除
       elif re.sub('<@\d+>\s?', '', message.content) in DEDELETE_KEY:
@@ -99,7 +116,7 @@ async def on_message(message):
         text = 'ログインに失敗したのでもう一回頼む'
         await reply(message.author.dm_channel, text)
       else:
-        text = '認証に成功したのでbotがつかえるようになったよ！\n今できることはこれ ```・今日のショップ情報（メンション）\n・ナイトマーケット情報（メンション + night, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ）\n・登録した情報の削除（メンション + 削除）```'
+        text = '認証に成功したのでbotがつかえるようになったよ！\nBotに向けてメンション + help で使い方を確認してください！```'
         await reply(message.author.dm_channel, text)
         rso_request.set_userdata(message.author.id, username, password)
         return
@@ -142,10 +159,14 @@ async def reply(channel, text, mention = None):
     await channel.send(text)
 
 # embedを使って送信
-async def reply_embed(channel, title, image_url):
-  embed = discord.Embed(title = title, color = 0x4169e1)
+async def reply_embed(channel, title, image_url = '', fields: List[Embed_field] = [], text = ''):
+  embed = discord.Embed(title = title, color = 0x4169e1, description = text)
   #embed.set_thumbnail(url = image_url)
-  embed.set_image(url = image_url)
+  if image_url:
+    embed.set_image(url = image_url)
+  for field in fields:
+    embed.set_field(name = field.name, value = field.value, inline = False)
+
   await channel.send(embed = embed)
 
 client.run(os.environ['DISCORD_TOKEN'])
