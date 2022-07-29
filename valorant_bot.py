@@ -55,7 +55,7 @@ async def on_message(message):
         fields.append(Embed_field('今日のショップ情報取得', '``` Botに向けてメンション```'))
         fields.append(Embed_field('ナイトマーケット情報取得', '``` Botに向けてメンション + 以下の文言のうちどれか\n night, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ```'))
         fields.append(Embed_field('ユーザー登録の削除', '``` Botに向けてメンション + 削除```'))
-        await reply_embed(message.channel, title, '', )
+        await reply_embed(message.channel, title, '', fields)
 
       # RSO情報の削除
       elif re.sub('<@\d+>\s?', '', message.content) in DEDELETE_KEY:
