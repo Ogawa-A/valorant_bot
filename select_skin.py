@@ -1,20 +1,13 @@
 import requests
 
-def get_user_skin_data(rso):
-  headers = {
-    "X-Riot-Entitlements-JWT": rso.entitlements_token,
-    "Authorization": f'Bearer {rso.access_token}',
-  }
+def get_skin_data(wepon_type):
+  r = requests.get('https://valorant-api.com/v1/weapons?language=ja-JP')
+  master_skin_data = r.json()['data']
 
-  # スキン情報の取得
-  url = 'https://pd.AP.a.pvp.net/personalization/v2/players/{0}/playerloadout'.format(rso.user_id)
-  r = requests.get(url, headers=headers)
+  display_names = []
+  for wepon_data in master_skin_data:
+    if wepon_data['displayName'] == wepon_type:     
+      display_names.append(wepon_data['skins']['displayName'])
 
-  try:
-    user_skins = r.json()['Guns']
-  except:
-    print(url, '/n', r.json())
-    return []
-
-  print(user_skins)
+  return display_names
   
