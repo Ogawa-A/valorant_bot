@@ -13,7 +13,7 @@ NIGHT_STORE_KEY = ['night', 'ナイト', 'ナイトストア', 'マーケット'
 REGISTER_KEY = ['登録', 'registration']
 DEDELETE_KEY = ['削除', 'delete']
 CREATE_CHANNEL_KEY = ['ch create']
-HELP_KEY = ['help', '-h', 'h']
+HELP_KEY = ['help', '-h', 'h', 'Help']
 SELECT_VANDAL_SKIN = ['vandal', 'v', 'ヴァンダル']
 
 @dataclasses.dataclass
@@ -69,9 +69,9 @@ async def on_message(message):
 
       # ヴァンダルのスキンを選ぶ  
       elif re.sub('<@\d+>\s?', '', message.content) in SELECT_VANDAL_SKIN:
-        print('vandal')
         rso = await get_rso(message)
-        user_skins = select_skin.get_user_skin_data(rso)
+        skins = select_skin.get_skin_data('ヴァンダル')
+        await reply(message.channel, skins)
 
       # ストア情報を取ってくる
       else:
