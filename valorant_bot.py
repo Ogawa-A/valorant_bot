@@ -115,7 +115,7 @@ async def on_message(message):
             emoji_VP = ('<:VP:{0}>').format(emoji.id)
             break
         for skin in skin_data:
-          await reply_embed(message.channel, '', '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), skin[2])
+          await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), '', skin[2])
 
       #else:
       #  name = re.sub('<@!\d+>\s?', '', message.content)
