@@ -165,7 +165,7 @@ async def reply_embed(channel, title, image_url = '', fields: List[Embed_field] 
   if image_url:
     embed.set_image(url = image_url)
   for field in fields:
-    embed.set_field(name = field.name, value = field.value, inline = False)
+    embed.add_field(name = field.name, value = field.value, inline = False)
 
   await channel.send(embed = embed)
 
