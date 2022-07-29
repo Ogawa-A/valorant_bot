@@ -81,14 +81,22 @@ async def on_message(message):
         battlepath_skins, store_skins = select_skin.get_skin_data('ヴァンダル')
         
         emojis = create_skin_select_emojis(len(store_skins))
+        skin_messages = []
+        count = 0
         for (emoji, skin) in zip(emojis, store_skins):    
           text += '{0} {1}\n'.format(emoji, skin.replace('ヴァンダル', '')) 
-        skin_message = await reply_embed(message.channel, title, text)
+          count += 1
+          if count == 14:
+            skin_message = await reply_embed(message.channel, title, text)
        
-        for emoji in emojis:
-          await skin_message.add_reaction(emoji)
+            for emoji in emojis:
+              await skin_message.add_reaction(emoji)
 
-        await skin_message.add_reaction('\N{White Heavy Check Mark}')
+            skin_messages.add(skin_message)
+            count = 0
+            text = ''
+
+        await skin_messages[-1].add_reaction('\N{White Heavy Check Mark}')
 
       # ヴァンダルのスキンを選ぶ  
       elif content in SELECT_VANDAL_SKIN_KEY:
@@ -203,24 +211,7 @@ def create_skin_select_emojis(count):
                     '\N{REGIONAL INDICATOR SYMBOL LETTER S}', '\N{REGIONAL INDICATOR SYMBOL LETTER T}', '\N{REGIONAL INDICATOR SYMBOL LETTER U}',
                     '\N{REGIONAL INDICATOR SYMBOL LETTER V}', '\N{REGIONAL INDICATOR SYMBOL LETTER W}', '\N{REGIONAL INDICATOR SYMBOL LETTER X}',
                     '\N{REGIONAL INDICATOR SYMBOL LETTER Y}', '\N{REGIONAL INDICATOR SYMBOL LETTER Z}']
-  number_emojis = [ '\N{DIGIT ZERO}', '\N{DIGIT ONE}', '\N{DIGIT TWO}', '\N{DIGIT THREE}', '\N{DIGIT FOUR}',
-                    '\N{DIGIT FIVE}', '\N{DIGIT SIX}', '\N{DIGIT SEVEN}', '\N{DIGIT EIGHT}', '\N{DIGIT NINE}', '\N{KEYCAP TEN}']
-  zodiac_sigh_emojis = ['\N{ARIES}', '\N{TAURUS}', '\N{GEMINI}', '\N{CANCER}', '\N{LEO}', '\N{VIRGO}', '\N{LIBRA}', '\N{SCORPIUS}',
-                        '\N{SAGITTARIUS}', '\N{CAPRICORN}', '\N{AQUARIUS}', '\N{PISCES}']
 
-  if count <= len(letter_emojis):
-    return letter_emojis[0:count]
-  elif count <= len(letter_emojis)+len(number_emojis):
-    emojis = letter_emojis + number_emojis
-    return emojis[0:count]
-  else:
-    emojis = letter_emojis + number_emojis
-    emojis = emojis + zodiac_sigh_emojis
-    return emojis[0:count]
-
-  #emojis = []
-  #for i in range(ord('A'), ord('Z')+1):
-  #  emojis.append(re.sub('\sA', chr(i), repr(letter_emoji)))
 
 client.run(os.environ['DISCORD_TOKEN'])
 
