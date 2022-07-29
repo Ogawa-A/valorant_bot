@@ -69,7 +69,7 @@ def get_spreadsheet():
   scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
   credentials = ServiceAccountCredentials.from_json_keyfile_dict(json_dict, scope)
   gc = gspread.authorize(credentials)
-  workbook = gc.open_by_key(os.environ['WORKBOOK_KEY'])
+  workbook = gc.open_by_key(os.environ['RSO_WORKBOOK_KEY'])
   sheet = workbook.get_worksheet(0)
   
   return sheet
