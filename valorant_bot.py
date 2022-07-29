@@ -70,8 +70,8 @@ async def on_message(message):
       # ヴァンダルのスキンを選ぶ  
       elif re.sub('<@\d+>\s?', '', message.content) in SELECT_VANDAL_SKIN:
         rso = await get_rso(message)
-        skins = select_skin.get_skin_data('ヴァンダル')
-        await reply(message.channel, skins)
+        skin = select_skin.lottery_skin('ヴァンダル')
+        await reply(message.channel, skin)
 
       # ストア情報を取ってくる
       else:
