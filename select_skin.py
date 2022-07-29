@@ -6,10 +6,11 @@ import gspread
 import requests
 from oauth2client.service_account import ServiceAccountCredentials
 
-battlepath_skin_teir_uuid = '12683d76-48d7-84a3-4e09-6985794f0445'
+
 
 # スキンデータの取得
 def get_skin_data(wepon_type):
+  battlepath_skin_teir_uuid = '12683d76-48d7-84a3-4e09-6985794f0445'
   r = requests.get('https://valorant-api.com/v1/weapons?language=ja-JP')
   master_skin_data = r.json()['data']
 
@@ -23,7 +24,7 @@ def get_skin_data(wepon_type):
           else:
             store_skins.append(skin['displayName'])
 
-  return battlepath_skins, store_skins
+  return sorted(battlepath_skins), sorted(store_skins)
 
 # くじ引き
 def lottery_skin(wepon_type, is_include_battlepath = False):
