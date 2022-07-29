@@ -3,6 +3,7 @@ import os
 import discord
 import rso_request
 import shop
+import string
 import select_skin
 import dataclasses
 from typing import List
@@ -14,7 +15,9 @@ REGISTER_KEY = ['登録', 'registration']
 DEDELETE_KEY = ['削除', 'delete']
 CREATE_CHANNEL_KEY = ['ch create']
 HELP_KEY = ['help', '-h', 'h', 'Help']
-SELECT_VANDAL_SKIN = ['vandal', 'v', 'ヴァンダル']
+SELECT_VANDAL_SKIN_KEY = ['vandal', 'v', 'ヴァンダル', 'dal']
+REGISTRATION_VANDAL = ['reg vandal', 'reg v', 'reg dal']
+ADD_BATTLEPATH_SKIN_KEY = ['+b']
 
 @dataclasses.dataclass
 class Embed_field:
@@ -32,12 +35,14 @@ async def on_message(message):
       return
   if client.user in message.mentions:
       global connectChannel
+      content = re.sub('<@\d+>\s?', '', message.content)
+
       if 'ばいばい' in message.content:
           await client.logout()
           return
 
       # RSO情報の登録
-      elif re.sub('<@\d+>\s?', '', message.content) in REGISTER_KEY:
+      elif content in REGISTER_KEY:
         text = 'ユーザー名とパスワードを空白区切りでどうぞ'
         dm_channel = message.author.dm_channel
         if dm_channel == None:
@@ -48,28 +53,44 @@ async def on_message(message):
         await reply(dm_channel, text)
         return
 
-      elif re.sub('<@\d+>\s?', '', message.content) in HELP_KEY:
+      elif content in HELP_KEY:
         title = '# Read me'
+        text = 'Botに向けてメンション＋特定のコマンドを送ることで色々動きます。以下'
         fields = []
-        fields.append(Embed_field('ユーザー情報の登録', '```Botに向けてメンション + 登録\n・DMがBotから届くはずですが、届かなかった場合以下を確認してください\n  - 設定 > プライバシー・安全 > サーバーにいるメンバーからのダイレクトメッセージを許可する がオンになっていること```'))
-        fields.append(Embed_field('今日のショップ情報取得', '```Botに向けてメンション```'))
-        fields.append(Embed_field('ナイトマーケット情報取得', '```Botに向けてメンション + 以下の文言のうちどれか\nnight, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ```'))
-        fields.append(Embed_field('ユーザー登録の削除', '```Botに向けてメンション + 削除```'))
+        fields.append(Embed_field('ユーザー情報の登録', '```{0}\n・DMがBotから届くはずですが、届かなかった場合以下を確認してください\n  - 設定 > プライバシー・安全 > サーバーにいるメンバーからのダイレクトメッセージを許可する がオンになっていること```'.format(REGISTER_KEY)))
+        fields.append(Embed_field('今日のショップ情報取得', '```メンションのみ```'))
+        fields.append(Embed_field('ナイトマーケット情報取得', '```{0}```'.format(NIGHT_STORE_KEY)))
+        fields.append(Embed_field('ユーザー登録の削除', '```{0}```'.format(DEDELETE_KEY)))
+        fields.append(Embed_field('テキストチャンネルの作成', '```{0}```'.format(CREATE_CHANNEL_KEY)))
         await reply_embed(message.channel, title, '', fields)
 
       # RSO情報の削除
-      elif re.sub('<@\d+>\s?', '', message.content) in DEDELETE_KEY:
+      elif content in DEDELETE_KEY:
         success = rso_request.delete_userdata(str(message.author.id))
         text = '削除に成功しました' if success else '削除に失敗しました'
         await reply(message.channel, text)
 
       # テキストチャンネルを作る
-      elif re.sub('<@\d+>\s?', '', message.content) in CREATE_CHANNEL_KEY:
+      elif content in CREATE_CHANNEL_KEY:
         await create_text_channel(message)
 
+      # ヴァンダルのスキンを登録する
+      elif content in REGISTRATION_VANDAL:
+        title = 'プールに入れたいスキンの絵文字を押して、最後に\N{White Heavy Check Mark}を押すんじゃ'
+        text = ''
+        battlepath_skins, store_skins = select_skin.get_skin_data('ヴァンダル')
+        
+        emojis = create_skin_select_emojis(len(store_skins))
+        for (emoji, skin) in zip(emojis, store_skins):
+          text += '\N{{0}} {1}\n'.format(emoji, skin)
+        skin_message = await reply_embed(message.channel, title, text)
+        for emoji in emojis:
+          await skin_message.add_reaction('\N{{0}}'.format(emoji))
+
+        await skin_message.add_reaction('\N{White Heavy Check Mark}')
+
       # ヴァンダルのスキンを選ぶ  
-      elif re.sub('<@\d+>\s?', '', message.content) in SELECT_VANDAL_SKIN:
-        rso = await get_rso(message)
+      elif content in SELECT_VANDAL_SKIN_KEY:
         skin = select_skin.lottery_skin('ヴァンダル')
         await reply(message.channel, skin)
 
@@ -159,7 +180,7 @@ async def reply(channel, text, mention = None):
     await channel.send(text)
 
 # embedを使って送信
-async def reply_embed(channel, title, image_url = '', fields: List[Embed_field] = [], text = ''):
+async def reply_embed(channel, title, text = '', image_url = '', fields: List[Embed_field] = []):
   embed = discord.Embed(title = title, color = 0x4169e1, description = text)
   #embed.set_thumbnail(url = image_url)
   if image_url:
@@ -167,7 +188,25 @@ async def reply_embed(channel, title, image_url = '', fields: List[Embed_field] 
   for field in fields:
     embed.add_field(name = field.name, value = field.value, inline = False)
 
-  await channel.send(embed = embed)
+  message = await channel.send(embed = embed)
+  return message
+
+# スキン選択用の絵文字リストを生成する
+def create_skin_select_emojis(count):
+  letter_emoji_pre_word = 'REGIONAL INDICATOR SYMBOL LETTER '
+  number_emojis = [ 'DIGIT ZERO', 'DIGIT ONE', 'DIGIT TWO', 'DIGIT THREE', 'DIGIT FOUR',
+                    'DIGIT FIVE', 'DIGIT SIX', 'DIGIT SEVEN', 'DIGIT EIGHT', 'DIGIT NINE', 'DIGIT TEN']
+  zodiac_sigh_emojis = ['ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIUS',
+                        'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES']
+
+  emojis = []
+  for i in range(ord('A'), ord('Z'+1)):
+    emojis.append('{0}{1}'.format(letter_emoji_pre_word, chr(i)))
+
+  emojis.extend(number_emojis)
+  emojis.extend(zodiac_sigh_emojis)
+
+  return emojis[0:count]
 
 client.run(os.environ['DISCORD_TOKEN'])
 
