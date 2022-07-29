@@ -76,17 +76,17 @@ async def on_message(message):
 
       # ヴァンダルのスキンを登録する
       elif content in REGISTRATION_VANDAL:
-        title = 'プールに入れたいスキンの絵文字を押して、最後に\N{White Heavy Check Mark}を押すんじゃ'
+        title = 'リストに入れたいスキンの絵文字を押して、最後に\N{White Heavy Check Mark}を押すんじゃ'
         text = ''
         battlepath_skins, store_skins = select_skin.get_skin_data('ヴァンダル')
         
         emojis = create_skin_select_emojis(len(store_skins))
-        for (emoji, skin) in zip(emojis, store_skins):     
-          text += '\N' + emoji + ' ' + skin.replace('ヴァンダル', '') + '\n'
+        for (emoji, skin) in zip(emojis, store_skins):    
+          text += '{0} {1}\n'.format(emoji, skin.replace('ヴァンダル', '')) 
         skin_message = await reply_embed(message.channel, title, text)
        
         for emoji in emojis:
-          await skin_message.add_reaction('\N' + emoji)
+          await skin_message.add_reaction(emoji)
 
         await skin_message.add_reaction('\N{White Heavy Check Mark}')
 
@@ -99,7 +99,7 @@ async def on_message(message):
       else:
         rso = await get_rso(message)
         skin_data = []
-        if re.sub('<@\d+>\s?', '', message.content) in NIGHT_STORE_KEY:
+        if content in NIGHT_STORE_KEY:
           skin_data = shop.get_night_data(rso)
         else:
           skin_data = shop.get_skin_data(rso)
@@ -194,20 +194,33 @@ async def reply_embed(channel, title, text = '', image_url = '', fields: List[Em
 
 # スキン選択用の絵文字リストを生成する
 def create_skin_select_emojis(count):
-  letter_emoji_pre_word = 'REGIONAL INDICATOR SYMBOL LETTER '
-  number_emojis = [ 'DIGIT ZERO', 'DIGIT ONE', 'DIGIT TWO', 'DIGIT THREE', 'DIGIT FOUR',
-                    'DIGIT FIVE', 'DIGIT SIX', 'DIGIT SEVEN', 'DIGIT EIGHT', 'DIGIT NINE', 'DIGIT TEN']
-  zodiac_sigh_emojis = ['ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIUS',
-                        'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES']
+  letter_emojis = ['\N{REGIONAL INDICATOR SYMBOL LETTER A}', '\N{REGIONAL INDICATOR SYMBOL LETTER B}', '\N{REGIONAL INDICATOR SYMBOL LETTER C}', 
+                    '\N{REGIONAL INDICATOR SYMBOL LETTER D}', '\N{REGIONAL INDICATOR SYMBOL LETTER E}', '\N{REGIONAL INDICATOR SYMBOL LETTER F}',
+                    '\N{REGIONAL INDICATOR SYMBOL LETTER G}', '\N{REGIONAL INDICATOR SYMBOL LETTER H}', '\N{REGIONAL INDICATOR SYMBOL LETTER I}',
+                    '\N{REGIONAL INDICATOR SYMBOL LETTER J}', '\N{REGIONAL INDICATOR SYMBOL LETTER K}', '\N{REGIONAL INDICATOR SYMBOL LETTER L}',
+                    '\N{REGIONAL INDICATOR SYMBOL LETTER M}', '\N{REGIONAL INDICATOR SYMBOL LETTER N}', '\N{REGIONAL INDICATOR SYMBOL LETTER O}',
+                    '\N{REGIONAL INDICATOR SYMBOL LETTER P}', '\N{REGIONAL INDICATOR SYMBOL LETTER Q}', '\N{REGIONAL INDICATOR SYMBOL LETTER R}',
+                    '\N{REGIONAL INDICATOR SYMBOL LETTER S}', '\N{REGIONAL INDICATOR SYMBOL LETTER T}', '\N{REGIONAL INDICATOR SYMBOL LETTER U}',
+                    '\N{REGIONAL INDICATOR SYMBOL LETTER V}', '\N{REGIONAL INDICATOR SYMBOL LETTER W}', '\N{REGIONAL INDICATOR SYMBOL LETTER X}',
+                    '\N{REGIONAL INDICATOR SYMBOL LETTER Y}', '\N{REGIONAL INDICATOR SYMBOL LETTER Z}']
+  number_emojis = [ '\N{DIGIT ZERO}', '\N{DIGIT ONE}', '\N{DIGIT TWO}', '\N{DIGIT THREE}', '\N{DIGIT FOUR}',
+                    '\N{DIGIT FIVE}', '\N{DIGIT SIX}', '\N{DIGIT SEVEN}', '\N{DIGIT EIGHT}', '\N{DIGIT NINE}', '\N{KEYCAP TEN}']
+  zodiac_sigh_emojis = ['\N{ARIES}', '\N{TAURUS}', '\N{GEMINI}', '\N{CANCER}', '\N{LEO}', '\N{VIRGO}', '\N{LIBRA}', '\N{SCORPIUS}',
+                        '\N{SAGITTARIUS}', '\N{CAPRICORN}', '\N{AQUARIUS}', '\N{PISCES}']
 
-  emojis = []
-  for i in range(ord('A'), ord('Z')+1):
-    emojis.append('{0}{1}'.format(letter_emoji_pre_word, chr(i)))
+  if count <= len(letter_emojis):
+    return letter_emojis[0:count]
+  elif count <= len(letter_emojis)+len(number_emojis):
+    emojis = letter_emojis + number_emojis
+    return emojis[0:count]
+  else:
+    emojis = letter_emojis + number_emojis
+    emojis = emojis + zodiac_sigh_emojis
+    return emojis[0:count]
 
-  emojis.extend(number_emojis)
-  emojis.extend(zodiac_sigh_emojis)
-
-  return emojis[0:count]
+  #emojis = []
+  #for i in range(ord('A'), ord('Z')+1):
+  #  emojis.append(re.sub('\sA', chr(i), repr(letter_emoji)))
 
 client.run(os.environ['DISCORD_TOKEN'])
 
