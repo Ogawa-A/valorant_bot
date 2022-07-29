@@ -81,11 +81,12 @@ async def on_message(message):
         battlepath_skins, store_skins = select_skin.get_skin_data('ヴァンダル')
         
         emojis = create_skin_select_emojis(len(store_skins))
-        for (emoji, skin) in zip(emojis, store_skins):
-          text += '\\N{{0}} {1}\n'.format(emoji, skin.replace('ヴァンダル', ''))
+        for (emoji, skin) in zip(emojis, store_skins):     
+          text += '\N' + emoji + ' ' + skin.replace('ヴァンダル', '') + '\n'
         skin_message = await reply_embed(message.channel, title, text)
+       
         for emoji in emojis:
-          await skin_message.add_reaction('\\N{{0}}'.format(emoji))
+          await skin_message.add_reaction('\N' + emoji)
 
         await skin_message.add_reaction('\N{White Heavy Check Mark}')
 
