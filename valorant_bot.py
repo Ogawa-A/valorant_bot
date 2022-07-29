@@ -51,10 +51,10 @@ async def on_message(message):
       elif re.sub('<@\d+>\s?', '', message.content) in HELP_KEY:
         title = '# Read me'
         fields = []
-        fields.append(Embed_field('ユーザー情報の登録', '``` Botに向けてメンション + 登録\n ・DMがBotから届くはずですが、届かなかった場合以下を確認してください\n  - 設定 > プライバシー・安全 > サーバーにいるメンバーからのダイレクトメッセージを許可する がオンになっていること```'))
-        fields.append(Embed_field('今日のショップ情報取得', '``` Botに向けてメンション```'))
-        fields.append(Embed_field('ナイトマーケット情報取得', '``` Botに向けてメンション + 以下の文言のうちどれか\n night, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ```'))
-        fields.append(Embed_field('ユーザー登録の削除', '``` Botに向けてメンション + 削除```'))
+        fields.append(Embed_field('ユーザー情報の登録', '```Botに向けてメンション + 登録\n ・DMがBotから届くはずですが、届かなかった場合以下を確認してください\n  - 設定 > プライバシー・安全 > サーバーにいるメンバーからのダイレクトメッセージを許可する がオンになっていること```'))
+        fields.append(Embed_field('今日のショップ情報取得', '```Botに向けてメンション```'))
+        fields.append(Embed_field('ナイトマーケット情報取得', '```Botに向けてメンション + 以下の文言のうちどれか\n night, ナイト, ナイトストア, マーケット, ナイトマーケット, リサイクルショップ```'))
+        fields.append(Embed_field('ユーザー登録の削除', '```Botに向けてメンション + 削除```'))
         await reply_embed(message.channel, title, '', fields)
 
       # RSO情報の削除
