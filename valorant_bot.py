@@ -77,7 +77,6 @@ async def on_message(message):
       # ストア情報を取ってくる
       else:
         rso = await get_rso(message)
-        print(rso)
         skin_data = []
         if content in NIGHT_STORE_KEY:
           skin_data = shop.get_night_data(rso)
@@ -126,8 +125,6 @@ async def on_message(message):
 # rsoデータの取得
 async def get_rso(message):
   rso = rso_request.get_userdata(str(message.author.id))
-  print('user_data: ')
-  print(rso)
   if rso == 'nodata':
     text = 'まずはメンションをつけて「登録」と発言してくれよな'
     await reply(message.channel, text)

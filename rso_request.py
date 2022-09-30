@@ -33,6 +33,7 @@ def get_userdata(discord_id):
       cipher_text = cipher.decrypt_and_verify(bytes.fromhex(data[1]), bytes.fromhex(data[2]))
       username, password = cipher_text.decode().split()
 
+      print(('get spreadsheet: {0}, {1}').format(username, password))
       return get_rso_data(username, password)
 
   return 'nodata'
@@ -113,6 +114,7 @@ def get_rso_data(username, password):
       raise MultifactorException
     data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
     access_token = data[0]    
+    print(('access_token: {0}').format(access_token))
 
     # entitlements_tokenの取得
     headers = {
@@ -123,6 +125,8 @@ def get_rso_data(username, password):
     }
     r = session.post('https://entitlements.auth.riotgames.com/api/token/v1', headers=headers, json={})
     entitlements_token = r.json()['entitlements_token']
+    print(('entitlements_token: {0}').format(entitlements_token))
+
 
     # user_idの取得
     headers = {
@@ -134,6 +138,8 @@ def get_rso_data(username, password):
 
     r = session.post('https://auth.riotgames.com/userinfo', headers=headers, json={})
     user_id = r.json()['sub']
+    print(('user_id: {0}').format(user_id))
+
 
   except MultifactorException as e:
     return 'multifactor'
