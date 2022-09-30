@@ -74,38 +74,10 @@ async def on_message(message):
       elif content in CREATE_CHANNEL_KEY:
         await create_text_channel(message)
 
-      # ヴァンダルのスキンを登録する
-      elif content in REGISTRATION_VANDAL:
-        title = 'リストに入れたいスキンの絵文字を押して、最後に\N{White Heavy Check Mark}を押すんじゃ'
-        text = ''
-        battlepath_skins, store_skins = select_skin.get_skin_data('ヴァンダル')
-        
-        emojis = create_skin_select_emojis(len(store_skins))
-        skin_messages = []
-        count = 0
-        for (emoji, skin) in zip(emojis, store_skins):    
-          text += '{0} {1}\n'.format(emoji, skin.replace('ヴァンダル', '')) 
-          count += 1
-          if count == 14:
-            skin_message = await reply_embed(message.channel, title, text)
-       
-            for emoji in emojis:
-              await skin_message.add_reaction(emoji)
-
-            skin_messages.add(skin_message)
-            count = 0
-            text = ''
-
-        await skin_messages[-1].add_reaction('\N{White Heavy Check Mark}')
-
-      # ヴァンダルのスキンを選ぶ  
-      elif content in SELECT_VANDAL_SKIN_KEY:
-        skin = select_skin.lottery_skin('ヴァンダル')
-        await reply(message.channel, skin)
-
       # ストア情報を取ってくる
       else:
         rso = await get_rso(message)
+        print(rso)
         skin_data = []
         if content in NIGHT_STORE_KEY:
           skin_data = shop.get_night_data(rso)

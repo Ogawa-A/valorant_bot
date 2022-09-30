@@ -35,5 +35,22 @@ def lottery_skin(wepon_type, is_include_battlepath = False):
 
   return random.choice(store_skins)
 
+def set_user_skin_data(discord_id):
 
-  return random.choice(skins)
+  sheet = get_spreadsheet()
+  row_num = len(sheet.col_values(1))
+
+  sheet.update_cell(row_num + 1, 1, str(discord_id))
+  sheet.update_cell(row_num + 1, 2, cipher_text.hex())
+  sheet.update_cell(row_num + 1, 3, tag.hex())
+
+
+def get_spreadsheet():
+  json_dict = json.loads(os.environ['gcp-json'])
+  scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+  credentials = ServiceAccountCredentials.from_json_keyfile_dict(json_dict, scope)
+  gc = gspread.authorize(credentials)
+  workbook = gc.open_by_key(os.environ['SKIN_WORKBOOK_KEY'])
+  sheet = workbook.get_worksheet(0)
+  
+  return sheet
