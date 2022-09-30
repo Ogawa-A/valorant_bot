@@ -77,6 +77,7 @@ def get_spreadsheet():
 
 # 認証情報を取得
 def get_rso_data(username, password):
+  print('get_rso_data')
   try:
     class SSLAdapter(HTTPAdapter):
               def init_poolmanager(self, connections, maxsize, block=False):
@@ -143,7 +144,8 @@ def get_rso_data(username, password):
 
   except MultifactorException as e:
     return 'multifactor'
-  except:
+  except e:
+    print(e)
     return None
   else: 
     return RSO(access_token, entitlements_token, user_id) 
