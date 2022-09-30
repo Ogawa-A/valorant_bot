@@ -33,7 +33,6 @@ def get_userdata(discord_id):
       cipher_text = cipher.decrypt_and_verify(bytes.fromhex(data[1]), bytes.fromhex(data[2]))
       username, password = cipher_text.decode().split()
 
-      print(('get spreadsheet: {0}, {1}').format(username, password))
       return get_rso_data(username, password)
 
   return 'nodata'
@@ -111,6 +110,7 @@ def get_rso_data(username, password):
 
     r = session.put('https://auth.riotgames.com/api/v1/authorization', json = data, headers = headers)
     pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
+    print(pattern)
     if r.json()['type'] == 'multifactor':
       raise MultifactorException
     data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
