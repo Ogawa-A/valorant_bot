@@ -126,6 +126,7 @@ async def on_message(message):
 # rsoデータの取得
 async def get_rso(message):
   rso = rso_request.get_userdata(str(message.author.id))
+  print('user_data: ' + rso)
   if rso == 'nodata':
     text = 'まずはメンションをつけて「登録」と発言してくれよな'
     await reply(message.channel, text)
