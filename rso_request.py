@@ -77,81 +77,76 @@ def get_spreadsheet():
 # 認証情報を取得
 def get_rso_data(username, password):
   print('get_rso_data')
-#  try:
-  class SSLAdapter(HTTPAdapter):
-            def init_poolmanager(self, connections, maxsize, block=False):
-                self.poolmanager = PoolManager(num_pools=connections,
-                                            maxsize=maxsize,
-                                            block=block,
-                                            ssl_version=ssl.PROTOCOL_TLSv1_2)
+  try:
+    class SSLAdapter(HTTPAdapter):
+              def init_poolmanager(self, connections, maxsize, block=False):
+                  self.poolmanager = PoolManager(num_pools=connections,
+                                              maxsize=maxsize,
+                                              block=block,
+                                              ssl_version=ssl.PROTOCOL_TLSv1_2)
 
-  headers = OrderedDict({
-            'User-Agent': 'RiotClient/58.0.0.4640299.4552318 rso-auth (Windows;10;;Professional, x64)'
-        })
-  session = requests.session()
-  session.mount('https://auth.riotgames.com/api/v1/authorization', SSLAdapter())
-  session.headers = headers
+    headers = OrderedDict({
+              'User-Agent': 'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64)'
+          })
+    session = requests.session()
+    session.mount('https://auth.riotgames.com/api/v1/authorization', SSLAdapter())
+    session.headers = headers
 
-  data = {
-    'client_id': 'play-valorant-web-prod',
-    'nonce': '1',
-    'redirect_uri': 'https://playvalorant.com/opt_in',
-    'response_type': 'token id_token',
-  }
-  r = session.post('https://auth.riotgames.com/api/v1/authorization', json=data, headers = headers)
-  print(r)
-#  except MultifactorException as e:
-#    return 'multifactor'
-#  except:
-#    return None
-#  else: 
-  session.close()
-  return None
-  #return RSO(access_token, entitlements_token, user_id) 
-#  finally:
-  session.close()
+    data = {
+      'client_id': 'play-valorant-web-prod',
+      'nonce': '1',
+      'redirect_uri': 'https://playvalorant.com/opt_in',
+      'response_type': 'token id_token',
+    }
+    r = session.post('https://auth.riotgames.com/api/v1/authorization', json=data, headers = headers)
 
-"""
-  # access_tokenの取得
-  data = {
-    'type': 'auth',
-    'username': username,
-    'password': password,
-    'language': 'ja-JP'
-  }
+    # access_tokenの取得
+    data = {
+      'type': 'auth',
+      'username': username,
+      'password': password,
+      'language': 'ja-JP'
+    }
 
-  r = session.put('https://auth.riotgames.com/api/v1/authorization', json = data, headers = headers)
-  pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
-  print(r.json())
-  if r.json()['type'] == 'multifactor':
-    raise MultifactorException
-  data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
-  access_token = data[0]    
-  print(('access_token: {0}').format(access_token))
+    r = session.put('https://auth.riotgames.com/api/v1/authorization', json = data, headers = headers)
+    pattern = re.compile('access_token=((?:[a-zA-Z]|\d|\.|-|_)*).*id_token=((?:[a-zA-Z]|\d|\.|-|_)*).*expires_in=(\d*)')
+    print(r.json())
+    if r.json()['type'] == 'multifactor':
+      raise MultifactorException
+    data = pattern.findall(r.json()['response']['parameters']['uri'])[0]
+    access_token = data[0]    
+    print(('access_token: {0}').format(access_token))
 
-  # entitlements_tokenの取得
-  headers = {
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Host': 'entitlements.auth.riotgames.com',
-    'User-Agent': 'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64)',
-    'Authorization': f'Bearer {access_token}',
-  }
-  r = session.post('https://entitlements.auth.riotgames.com/api/token/v1', headers=headers, json={})
-  entitlements_token = r.json()['entitlements_token']
-  print(('entitlements_token: {0}').format(entitlements_token))
+    # entitlements_tokenの取得
+    headers = {
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Host': 'entitlements.auth.riotgames.com',
+      'User-Agent': 'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64)',
+      'Authorization': f'Bearer {access_token}',
+    }
+    r = session.post('https://entitlements.auth.riotgames.com/api/token/v1', headers=headers, json={})
+    entitlements_token = r.json()['entitlements_token']
+    print(('entitlements_token: {0}').format(entitlements_token))
 
 
-  # user_idの取得
-  headers = {
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Host': 'auth.riotgames.com',
-            'User-Agent': 'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64)',
-            'Authorization': f'Bearer {access_token}',
-        }
+    # user_idの取得
+    headers = {
+              'Accept-Encoding': 'gzip, deflate, br',
+              'Host': 'auth.riotgames.com',
+              'User-Agent': 'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64)',
+              'Authorization': f'Bearer {access_token}',
+          }
 
-  r = session.post('https://auth.riotgames.com/userinfo', headers=headers, json={})
-  user_id = r.json()['sub']
-  print(('user_id: {0}').format(user_id))
+    r = session.post('https://auth.riotgames.com/userinfo', headers=headers, json={})
+    user_id = r.json()['sub']
+    print(('user_id: {0}').format(user_id))
 
-"""
 
+  except MultifactorException as e:
+    return 'multifactor'
+  except:
+    return None
+  else: 
+    return RSO(access_token, entitlements_token, user_id) 
+  finally:
+    session.close()
