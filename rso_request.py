@@ -99,7 +99,7 @@ def get_rso_data(username, password):
     'response_type': 'token id_token',
   }
   r = session.post('https://auth.riotgames.com/api/v1/authorization', json=data, headers = headers)
-  print(r.json())
+  print(r)
 #  except MultifactorException as e:
 #    return 'multifactor'
 #  except:
