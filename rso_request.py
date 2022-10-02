@@ -86,7 +86,7 @@ def get_rso_data(username, password):
                                             ssl_version=ssl.PROTOCOL_TLSv1_2)
 
   headers = OrderedDict({
-            'User-Agent': 'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64)'
+            'User-Agent': 'RiotClient/58.0.0.4640299.4552318 rso-auth (Windows;10;;Professional, x64)'
         })
   session = requests.session()
   session.mount('https://auth.riotgames.com/api/v1/authorization', SSLAdapter())
