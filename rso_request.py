@@ -100,7 +100,18 @@ def get_rso_data(username, password):
   }
   r = session.post('https://auth.riotgames.com/api/v1/authorization', json=data, headers = headers)
   print(r.json())
+#  except MultifactorException as e:
+#    return 'multifactor'
+#  except:
+#    return None
+#  else: 
+  session.close()
+  return None
+  #return RSO(access_token, entitlements_token, user_id) 
+#  finally:
+  session.close()
 
+"""
   # access_tokenの取得
   data = {
     'type': 'auth',
@@ -142,13 +153,5 @@ def get_rso_data(username, password):
   user_id = r.json()['sub']
   print(('user_id: {0}').format(user_id))
 
+"""
 
-#  except MultifactorException as e:
-#    return 'multifactor'
-#  except:
-#    return None
-#  else: 
-  session.close()
-  return RSO(access_token, entitlements_token, user_id) 
-#  finally:
-  session.close()
