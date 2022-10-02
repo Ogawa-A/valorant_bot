@@ -121,7 +121,7 @@ def get_rso_data(username, password):
     headers = {
       'Accept-Encoding': 'gzip, deflate, br',
       'Host': 'entitlements.auth.riotgames.com',
-      'User-Agent': 'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64)',
+      'User-Agent': 'RiotClient/58.0.0.4640299.4552318 rso-auth (Windows;10;;Professional, x64)',
       'Authorization': f'Bearer {access_token}',
     }
     r = session.post('https://entitlements.auth.riotgames.com/api/token/v1', headers=headers, json={})
@@ -133,7 +133,7 @@ def get_rso_data(username, password):
     headers = {
               'Accept-Encoding': 'gzip, deflate, br',
               'Host': 'auth.riotgames.com',
-              'User-Agent': 'RiotClient/43.0.1.4195386.4190634 rso-auth (Windows;10;;Professional, x64)',
+              'User-Agent': 'RiotClient/58.0.0.4640299.4552318 rso-auth (Windows;10;;Professional, x64)',
               'Authorization': f'Bearer {access_token}',
           }
 
@@ -150,3 +150,4 @@ def get_rso_data(username, password):
     return RSO(access_token, entitlements_token, user_id) 
   finally:
     session.close()
+
