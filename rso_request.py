@@ -76,7 +76,7 @@ def get_spreadsheet():
 
 # 認証情報を取得
 def get_rso_data(username, password):
-  client_version = "60.0.3.4751956.4749685"
+  client_version = get_client_version()
   try:
     class SSLAdapter(HTTPAdapter):
               def init_poolmanager(self, connections, maxsize, block=False):
@@ -151,3 +151,9 @@ def get_rso_data(username, password):
   finally:
     session.close()
 
+# 最新のクライアント情報を取得
+def get_client_version():
+  r = requests.get('https://valorant-api.com/v1/version')
+  version_data = r.json()['data']
+
+  return version_data['riotClientBuild']
