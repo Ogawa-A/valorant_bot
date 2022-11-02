@@ -76,7 +76,7 @@ def get_spreadsheet():
 
 # 認証情報を取得
 def get_rso_data(username, password):
-  print('get_rso_data')
+  client_version = "60.0.3.4751956.4749685"
   try:
     class SSLAdapter(HTTPAdapter):
               def init_poolmanager(self, connections, maxsize, block=False):
@@ -86,7 +86,7 @@ def get_rso_data(username, password):
                                               ssl_version=ssl.PROTOCOL_TLSv1_2)
 
     headers = OrderedDict({
-              'User-Agent': 'RiotClient/58.0.0.4640299.4552318 rso-auth (Windows;10;;Professional, x64)'
+              'User-Agent': 'RiotClient/{0} rso-auth (Windows;10;;Professional, x64)'.format(client_version)
           })
     session = requests.session()
     session.mount('https://auth.riotgames.com/api/v1/authorization', SSLAdapter())
@@ -121,19 +121,19 @@ def get_rso_data(username, password):
     headers = {
       'Accept-Encoding': 'gzip, deflate, br',
       'Host': 'entitlements.auth.riotgames.com',
-      'User-Agent': 'RiotClient/58.0.0.4640299.4552318 rso-auth (Windows;10;;Professional, x64)',
+      'User-Agent': 'RiotClient/{0} rso-auth (Windows;10;;Professional, x64)'.format(client_version),
       'Authorization': f'Bearer {access_token}',
     }
     r = session.post('https://entitlements.auth.riotgames.com/api/token/v1', headers=headers, json={})
     entitlements_token = r.json()['entitlements_token']
     print(('entitlements_token: {0}').format(entitlements_token))
-
-
+                            
+      
     # user_idの取得
     headers = {
               'Accept-Encoding': 'gzip, deflate, br',
               'Host': 'auth.riotgames.com',
-              'User-Agent': 'RiotClient/58.0.0.4640299.4552318 rso-auth (Windows;10;;Professional, x64)',
+              'User-Agent': 'RiotClient/{0} rso-auth (Windows;10;;Professional, x64)'.format(client_version),
               'Authorization': f'Bearer {access_token}',
           }
 
