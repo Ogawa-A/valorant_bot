@@ -7,8 +7,12 @@ import string
 import select_skin
 import dataclasses
 from typing import List
+from dotenv import load_dotenv
+load_dotenv()
 
-client = discord.Client()
+
+intents = discord.Intents(messages=True, guilds=True)
+client = discord.Client(intents=intents)
 
 NIGHT_STORE_KEY = ['night', 'ナイト', 'ナイトストア', 'マーケット', 'ナイトマーケット', 'リサイクルショップ']
 REGISTER_KEY = ['登録', 'registration']
