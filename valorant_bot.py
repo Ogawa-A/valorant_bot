@@ -4,6 +4,7 @@ import discord
 import rso_request
 import shop
 import string
+import asyncio
 import select_skin
 import dataclasses
 from typing import List
@@ -41,10 +42,11 @@ async def on_message(message):
       global connectChannel
       content = re.sub('<@\d+>\s?', '', message.content)
 
+
+      print(content)
       if 'ばいばい' in message.content:
           await client.logout()
           return
-
       # RSO情報の登録
       elif content in REGISTER_KEY:
         text = 'ユーザー名とパスワードを空白区切りでどうぞ'
@@ -80,7 +82,9 @@ async def on_message(message):
 
       # ストア情報を取ってくる
       else:
+        # まず認証情報を取得
         rso = await get_rso(message)
+
         skin_data = []
         if content in NIGHT_STORE_KEY:
           skin_data = shop.get_night_data(rso)
@@ -99,7 +103,7 @@ async def on_message(message):
             break
         for skin in skin_data:
           await reply_embed(message.channel, '{0}　{1} {2}'.format(skin[0], emoji_VP, skin[1]), '', skin[2])
-
+        
       #else:
       #  name = re.sub('<@!\d+>\s?', '', message.content)
       #  await message.guild.get_member(user_id = message.mentions[0].id).edit(nick = name)
@@ -116,7 +120,7 @@ async def on_message(message):
         await reply(message.author.dm_channel, text)
         return
 
-      rso = rso_request.get_rso_data(username, password)
+      rso = await rso_request.get_member_token(username, password)
       if rso == None:
         text = 'ログインに失敗したのでもう一回頼む'
         await reply(message.author.dm_channel, text)
@@ -128,7 +132,7 @@ async def on_message(message):
 
 # rsoデータの取得
 async def get_rso(message):
-  rso = rso_request.get_userdata(str(message.author.id))
+  rso = await rso_request.get_token(str(message.author.id))
   if rso == 'nodata':
     text = 'まずはメンションをつけて「登録」と発言してくれよな'
     await reply(message.channel, text)
@@ -140,6 +144,7 @@ async def get_rso(message):
     await reply(message.channel, text)
   else:
     return rso
+  
 
 # テキストチャンネルの作成
 async def create_text_channel(message):
@@ -188,5 +193,5 @@ def create_skin_select_emojis(count):
                     '\N{REGIONAL INDICATOR SYMBOL LETTER Y}', '\N{REGIONAL INDICATOR SYMBOL LETTER Z}']
 
 
-client.run(os.environ['DISCORD_TOKEN'])
-
+#client.run(os.environ['DISCORD_TOKEN'])
+client.run(os.getenv('DISCORD_TOKEN'))
