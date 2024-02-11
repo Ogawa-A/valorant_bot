@@ -3,9 +3,6 @@ import os
 import discord
 import rso_request
 import shop
-import string
-import asyncio
-import select_skin
 import dataclasses
 from typing import List
 from dotenv import load_dotenv
