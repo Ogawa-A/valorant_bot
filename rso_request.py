@@ -34,7 +34,9 @@ async def get_token(discord_id):
 
 # トークン系を取得
 async def get_member_token(username, password):
-    riot_auth.RiotAuth.RIOT_CLIENT_USER_AGENT = get_client_version()
+    buildVersion = get_client_version()
+    riot_auth.RiotAuth.RIOT_CLIENT_USER_AGENT = buildVersion['riotClientBuild'] 
+    riot_auth.RiotAuth.RIOT_CLIENT_VERSION = buildVersion['riotClientVersion'] 
 
     CREDS = username, password
 
@@ -126,7 +128,7 @@ def get_client_version():
   version_data = r.json()['data']
 
   print(version_data)
-  return version_data['riotClientBuild'] 
+  return version_data
 
 '''
 # 認証情報を取得

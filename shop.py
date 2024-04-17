@@ -1,5 +1,5 @@
 import requests
-import json
+import riot_auth
 
 def get_master_data(master_skin_data, id):
   display_name = ''
@@ -20,15 +20,20 @@ def get_master_data(master_skin_data, id):
 
 # ショップデータを取得
 def get_skin_data(rso):
+
   headers = {
     "X-Riot-Entitlements-JWT": rso.entitlements_token,
     "Authorization": f'Bearer {rso.access_token}',
+    "X-Riot-ClientVersion": riot_auth.RiotAuth.RIOT_CLIENT_VERSION,
+    "X-Riot-ClientPlatform":'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
   }
+
+  print(headers)
 
   # storeの取得
   url = 'https://pd.AP.a.pvp.net/store/v2/storefront/{0}'.format(rso.user_id)
   r = requests.get(url, headers=headers)
-
+  print(r)
   try:
     store_skin_ids = r.json()['SkinsPanelLayout']['SingleItemOffers']
   except:
@@ -62,6 +67,8 @@ def get_night_data(rso):
   headers = {
     "X-Riot-Entitlements-JWT": rso.entitlements_token,
     "Authorization": f'Bearer {rso.access_token}',
+    "X-Riot-ClientVersion": riot_auth.RiotAuth.RIOT_CLIENT_VERSION,
+    "X-Riot-ClientPlatform":'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
   }
 
   # storeの取得
